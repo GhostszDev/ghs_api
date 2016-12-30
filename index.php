@@ -26,21 +26,16 @@ function ghs_webservice_route(){
             'callback' => 'login'
         )
     );
-
-    register_rest_route('ghs_api/v1', '/cool/',
-        array(
-            'methods' => 'GET',
-            'callback' => 'login'
-        )
-    );
 }
 
 function login(){
 
+    echo $_POST("user_login");
+
     $creds = [
-        'user_login' => $_POST("user_login"),
+        'user_login'    => $_POST("user_login"),
         'user_password' => $_POST("user_password"),
-        'remember' => $_POST("remember")
+        'remember'      => $_POST("remember")
     ];
 
     $user = wp_signon( $creds, false );
@@ -53,6 +48,7 @@ function login(){
     } else {
         $data["success"] = true;
     }
+
 
     return json_encode($data);
 
