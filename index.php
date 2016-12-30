@@ -14,24 +14,46 @@
  * Author URI:        http://Ghostszmusic.com
  */
 
-namespace ghs_api\api{
+//adding actions
+add_action('rest_api_init', 'ghs_webservice_route');
 
-    class webservice {
+//functions
+function ghs_webservice_route(){
 
-        //main login for all users of ghostszmusic
-        function login(){
+    register_rest_route('ghs_api/v1', '/login/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'login'
+        )
+    );
 
-            $results = [
-                'success' => false,
-                'message' => "I'm super cool!"
-            ];
+    register_rest_route('ghs_api/v1', '/cool/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'login'
+        )
+    );
+}
 
-            $data = json_encode($results);
+function login(){
 
-            return $data;
+    $creds = [
+        'user_login' => $_POST("user_login"),
+        'user_password' => $_POST("user_password"),
+        'remember' => $_POST("remember")
+    ];
 
-        }
+    $user = wp_signon( $creds, false );
 
+    if ( is_wp_error($user) ) {
+
+        $data['error'] = $user->get_error_message();
+        $data["success"] = false;
+
+    } else {
+        $data["success"] = true;
     }
+
+    return json_encode($data);
 
 }
