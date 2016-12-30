@@ -30,7 +30,7 @@ function ghs_webservice_route(){
 
 function login(){
 
-    echo $_POST("user_login");
+    echo 'fuck' . $_POST("user_login") . PHP_EOL;
 
     $creds = [
         'user_login'    => $_POST("user_login"),
