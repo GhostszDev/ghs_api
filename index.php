@@ -26,26 +26,54 @@ function ghs_webservice_route(){
             'callback' => 'login'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/logout/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'logout'
+        )
+    );
 }
 
 function login(){
 
     $cred = [
-        'user_login' => 'ghost',
-        'user_password' => 'teamdorky1',
-        'remember' => false
+        'user_login' => $_REQUEST['user_login'],
+        'user_password' => $_REQUEST['user_password'],
+        'remember' => $_REQUEST['remember']
     ];
 
-    $user = wp_signon( $cred, '' );
+    $user = wp_signon( $cred, false );
 
-    if($user){
-        $data['user_info'] = $user;
-        $data['success'] = true;
-    } else {
+    if ( is_wp_error($user) ){
+        $data['error'] = "Please check your username/and or password.";
         $data['success'] = false;
+    } else {
+        $data['success'] = true;
+        $data['user_info'] = $user;
     }
-    $data['convo'] = 'fuck you';
+
     
+    return $data;
+
+}
+
+function logout(){
+    wp_logout();
+}
+
+function signup(){
+
+}
+
+function social(){
+
+    $social = [
+        id => $_REQUEST(""),
+        name => $_REQUEST("")
+    ];
+
+    $data = $social;
     return $data;
 
 }
