@@ -30,26 +30,22 @@ function ghs_webservice_route(){
 
 function login(){
 
-    echo 'fuck' . $_POST("user_login") . PHP_EOL;
-
-    $creds = [
-        'user_login'    => $_POST("user_login"),
-        'user_password' => $_POST("user_password"),
-        'remember'      => $_POST("remember")
+    $cred = [
+        'user_login' => 'ghost',
+        'user_password' => 'teamdorky1',
+        'remember' => false
     ];
 
-    $user = wp_signon( $creds, false );
+    $user = wp_signon( $cred, '' );
 
-    if ( is_wp_error($user) ) {
-
-        $data['error'] = $user->get_error_message();
-        $data["success"] = false;
-
+    if($user){
+        $data['user_info'] = $user;
+        $data['success'] = true;
     } else {
-        $data["success"] = true;
+        $data['success'] = false;
     }
-
-
-    return json_encode($data);
+    $data['convo'] = 'fuck you';
+    
+    return $data;
 
 }
