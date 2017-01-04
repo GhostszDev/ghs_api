@@ -1,0 +1,1 @@
+# GHS API for wordpress
