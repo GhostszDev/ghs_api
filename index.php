@@ -33,6 +33,13 @@ function ghs_webservice_route(){
             'callback' => 'logout'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/signup/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'signup'
+        )
+    );
 }
 
 function login(){
@@ -64,13 +71,23 @@ function logout(){
 
 function signup(){
 
+    $data['success'] = false;
+
+    $new_user = [
+        'user_name',
+        'email',
+        'password'
+    ];
+
+    return $data;
+
 }
 
 function social(){
 
     $social = [
-        id => $_REQUEST(""),
-        name => $_REQUEST("")
+        'id' => $_REQUEST(""),
+        'name' => $_REQUEST("")
     ];
 
     $data = $social;

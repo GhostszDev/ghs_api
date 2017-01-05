@@ -4,7 +4,7 @@ This API is for connecting mobile and desktop to become one unified platform.
 Function  | Method| Url   | Usage | Completion |
 ----------|-------|-------|-------|------------|
 Login     | POST  | /ghs_api/v1/login/  | This allows users to login remotely to site | YES
-Logout    |       | /ghs_api/v1/logout/ | This allows user to sign out from site remotely | NO
+Logout    | GET   | /ghs_api/v1/logout/ | This allows user to sign out from site remotely | NO
 SignUp    | POST  | /ghs_api/v1/signup/ | This allows user to sign up to site remotely | NO
 GetUserData | GET | /ghs_api/v1/getuserdata/ | This get the current user data | NO
 
