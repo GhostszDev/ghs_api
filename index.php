@@ -74,10 +74,28 @@ function signup(){
     $data['success'] = false;
 
     $new_user = [
-        'user_name',
-        'email',
-        'password'
+        'user_name' => $_REQUEST['user_name'],
+        'email'  => $_REQUEST['email'],
+        'password'  => $_REQUEST['password']
     ];
+
+    if ( username_exists($new_user['user_name']) || email_exists($new_user['email']) ) {
+        $data['message'] = "Username and/or Email is unavailable";
+    }else{
+        if($new_user['password']){
+            $created = wp_create_user( $new_user['user_name'], $new_user['password'], $new_user['email'] );
+        } else {
+            $data['message'] = "Please enter a password";
+        }
+
+        if($created){
+            $data['success'] = true;
+            $data['message'] = "User has been created";
+            $data['user'] = $new_user;
+        }
+
+    }
+
 
     return $data;
 
