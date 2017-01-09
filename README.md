@@ -8,7 +8,7 @@ Logout    | GET   | /ghs_api/v1/logout/ | This allows user to sign out from site
 SignUp    | POST  | /ghs_api/v1/signup/ | This allows user to sign up to site remotely | YES
 GetUserData | GET | /ghs_api/v1/getuserdata/ | This get the current user data | NO
 Social | POST | /ghs_api/v1/social/ | Sign in the user using his social key | NO
-Mail List | POST | /ghs_api/v1/mailing/ | Signs email of user to mailing list database | NO
+Mail List | POST | /ghs_api/v1/mailing/ | Signs email of user to mailing list database | YES
 
 
 

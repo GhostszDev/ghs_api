@@ -40,6 +40,13 @@ function ghs_webservice_route(){
             'callback' => 'signup'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/mailing/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'mailing'
+        )
+    );
 }
 
 function login(){
@@ -69,14 +76,75 @@ function logout(){
     wp_logout();
 }
 
+function insert_mailing_user($mail){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    if($mail['first_name'] && $mail['last_name'] && $mail['email']){
+        $check = $wpdb->get_results( "SELECT email FROM wp_mailing WHERE email LIKE " . "'". $mail['email'] ."'");
+
+//        // Print last SQL query string
+//        $data['last_query'] = $wpdb->last_query;
+//        // Print last SQL query result
+//        $data['last_result'] = $wpdb->last_result;
+//        // Print last SQL query Error
+//        $data['last_error'] = $wpdb->last_error;
+
+        foreach ( $check as $page )
+        {
+           echo $page->email;
+        }
+
+        if($check < 1) {
+            $mailing = $wpdb->insert('wp_mailing', $mail);
+        }
+
+        if($mailing){
+            $data['success'] = true;
+            $data['message'] = 'User has been added to mailing list!';
+            $data['mailing'] = $mailing;
+        } else {
+            $data['message'] = 'This email has already been used!';
+        }
+    } else {
+        $data['message'] = 'Their is no data being passed';
+    }
+
+//    $data['mailing'] = $mail;
+
+    return $data;
+
+}
+
+function mailing(){
+
+    $mailing_user = [
+        'first_name'  => $_REQUEST['first_name'],
+        'last_name'  => $_REQUEST["last_name"],
+        'email'  => $_REQUEST["email"]
+    ];
+
+//    $data['cool'] = $mailing_user;
+
+    $insert = insert_mailing_user($mailing_user);
+    $data['insert'] = $insert;
+
+    return $data;
+
+}
+
 function signup(){
 
     $data['success'] = false;
 
     $new_user = [
         'user_name' => $_REQUEST['user_name'],
+        'first_name' => $_REQUEST['first_name'],
+        'last_name' => $_REQUEST['last_name'],
         'email'  => $_REQUEST['email'],
-        'password'  => $_REQUEST['password']
+        'password'  => $_REQUEST['password'],
+        'mailing' => $_REQUEST['mailing']
     ];
 
     if ( username_exists($new_user['user_name']) || email_exists($new_user['email']) ) {
@@ -84,6 +152,11 @@ function signup(){
     }else{
         if($new_user['password']){
             $created = wp_create_user( $new_user['user_name'], $new_user['password'], $new_user['email'] );
+
+            if($new_user['mailing']){
+                $data['mailing'] = insert_mailing_user($new_user);
+            }
+
         } else {
             $data['message'] = "Please enter a password";
         }
@@ -104,8 +177,8 @@ function signup(){
 function social(){
 
     $social = [
-        'id' => $_REQUEST(""),
-        'name' => $_REQUEST("")
+        'id' => $_REQUEST[""],
+        'name' => $_REQUEST[""]
     ];
 
     $data = $social;
