@@ -73,7 +73,7 @@ function login(){
 }
 
 function logout(){
-    wp_logout();
+    wp_clear_auth_cookie();
 }
 
 function insert_mailing_user($mail){
