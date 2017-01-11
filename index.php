@@ -47,6 +47,13 @@ function ghs_webservice_route(){
             'callback' => 'mailing'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/getuserdata/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'mailing'
+        )
+    );
 }
 
 function login(){
@@ -73,7 +80,19 @@ function login(){
 }
 
 function logout(){
-    wp_clear_auth_cookie();
+
+    $data['success'] = false;
+
+    if ( is_user_logged_in() ) {
+
+        wp_clear_auth_cookie();
+        $data['success'] = true;
+    } else {
+
+        $data['error'] = "You can't logout because you haven't logged in yet!";
+    }
+
+    return $data;
 }
 
 function insert_mailing_user($mail){
@@ -182,6 +201,24 @@ function social(){
     ];
 
     $data = $social;
+    return $data;
+
+}
+
+function getuserdata(){
+
+    $data['success'] = false;
+
+    if ( is_user_logged_in() ) {
+
+        $user = wp_get_current_user();
+        $data['user'] = $user;
+        $data['success'] = true;
+    } else {
+
+        $data['error'] = "You're not currently signed in!";
+    }
+
     return $data;
 
 }
