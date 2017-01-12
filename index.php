@@ -2,14 +2,14 @@
 /**
  *
  * @link              http://Ghostszmusic.com
- * @since             0.1.0
+ * @since             1.0
  * @package           Ghs_api
  *
  * @wordpress-plugin
- * Plugin Name:       GHS API
+ * Plugin Name:       GHS API v1
  * Plugin URI:        http://Ghostszmusic.com
  * Description:       This is the main api for Ghostszmusic website and mobile app.
- * Version:           0.1.0
+ * Version:           1.0
  * Author:            Steven "Ghost" Rivera
  * Author URI:        http://Ghostszmusic.com
  */
@@ -101,19 +101,7 @@ function insert_mailing_user($mail){
     global $wpdb;
 
     if($mail['first_name'] && $mail['last_name'] && $mail['email']){
-        $check = $wpdb->get_results( "SELECT email FROM wp_mailing WHERE email LIKE " . "'". $mail['email'] ."'");
-
-//        // Print last SQL query string
-//        $data['last_query'] = $wpdb->last_query;
-//        // Print last SQL query result
-//        $data['last_result'] = $wpdb->last_result;
-//        // Print last SQL query Error
-//        $data['last_error'] = $wpdb->last_error;
-
-        foreach ( $check as $page )
-        {
-           echo $page->email;
-        }
+        $check = $wpdb->get_results( "SELECT email FROM wp_mailing WHERE email LIKE '". $mail['email'] ."'");
 
         if($check < 1) {
             $mailing = $wpdb->insert('wp_mailing', $mail);
