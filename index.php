@@ -210,3 +210,25 @@ function getuserdata(){
     return $data;
 
 }
+
+function post_comment(){
+
+}
+
+function send_highscore(){
+    global $wpdb;
+
+    $data['success'] = false;
+
+    $game = $_REQUEST['game'];
+
+    $stats = [
+        'score' => $_REQUEST['score'],
+        'gamer_id'
+    ];
+
+    $wpdb->insert($game, $stats);
+
+    return $data;
+
+}
