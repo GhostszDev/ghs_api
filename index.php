@@ -222,12 +222,23 @@ function send_highscore(){
 
     $game = $_REQUEST['game'];
 
-    $stats = [
-        'score' => $_REQUEST['score'],
-        'gamer_id'
-    ];
+    if($game){
 
-    $wpdb->insert($game, $stats);
+        $stats = [
+            'score' => $_REQUEST['score'],
+            'gamer_id' => $_REQUEST['user_id']
+        ];
+
+        $wpdb->insert($game, $stats);
+        $data['success'] = true;
+
+    } else {
+
+        $data['success'] = false;
+        $data['error_message'] = "Their is no such game!";
+
+    }
+
 
     return $data;
 
