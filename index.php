@@ -27,6 +27,13 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/ghs_post/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'ghs_post'
+        )
+    );
+
     register_rest_route('ghs_api/v1', '/logout/',
         array(
             'methods' => 'GET',
@@ -54,29 +61,13 @@ function ghs_webservice_route(){
             'callback' => 'mailing'
         )
     );
-}
 
-function login(){
-
-    $cred = [
-        'user_login' => $_REQUEST['user_login'],
-        'user_password' => $_REQUEST['user_password'],
-        'remember' => $_REQUEST['remember']
-    ];
-
-    $user = wp_signon( $cred, false );
-
-    if ( is_wp_error($user) ){
-        $data['error'] = "Please check your username/and or password.";
-        $data['success'] = false;
-    } else {
-        $data['success'] = true;
-        $data['user_info'] = $user;
-    }
-
-    
-    return $data;
-
+    register_rest_route('ghs_api/v1', '/post_comment/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'post_comment'
+        )
+    );
 }
 
 function logout(){
@@ -89,7 +80,7 @@ function logout(){
         $data['success'] = true;
     } else {
 
-        $data['error'] = "You can't logout because you haven't logged in yet!";
+        $data['error_message'] = "You can't logout because you haven't logged in yet!";
     }
 
     return $data;
@@ -204,14 +195,10 @@ function getuserdata(){
         $data['success'] = true;
     } else {
 
-        $data['error'] = "You're not currently signed in!";
+        $data['error_message'] = "You're not currently signed in!";
     }
 
     return $data;
-
-}
-
-function post_comment(){
 
 }
 
@@ -239,6 +226,102 @@ function send_highscore(){
 
     }
 
+
+    return $data;
+
+}
+
+function post_comment(){
+
+    $data['success'] = false;
+
+    $comment_post_ID = $_REQUEST['comment_id'];
+    $comment_author = $_REQUEST['user_name'];
+    $comment_author_email = $_REQUEST['user_email'];
+    $comment_content = $_REQUEST['comment'];
+    $comment_type = $_REQUEST['comment_type'];
+    $comment_parent = $_REQUEST['comment_parent'];
+    $user_id = $_REQUEST['user_id'];
+
+    $commentdata = array(
+        'comment_post_ID' => $comment_post_ID, // to which post the comment will show up
+        'comment_author' => $comment_author, //fixed value - can be dynamic
+        'comment_author_email' => $comment_author_email, //fixed value - can be dynamic
+        'comment_author_url' => '', //fixed value - can be dynamic
+        'comment_content' => $comment_content, //fixed value - can be dynamic
+        'comment_type' => $comment_type, //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
+        'comment_parent' => $comment_parent, //0 if it's not a reply to another comment; if it's a reply, mention the parent comment ID here
+        'user_id' => $user_id, //passing current user ID or any predefined as per the demand
+    );
+
+//Insert new comment and get the comment ID
+    $comment_id = wp_new_comment( $commentdata );
+
+    if($comment_id){
+        $data['success'] = true;
+    }
+
+    return $data;
+
+}
+
+function login(){
+
+    $cred = [
+        'user_login' => $_REQUEST['user_login'],
+        'user_password' => $_REQUEST['user_password'],
+        'remember' => $_REQUEST['remember']
+    ];
+
+    $user = wp_signon( $cred, false );
+
+    if ( is_wp_error($user) ){
+        $data['error_message'] = "Please check your username/and or password.";
+        $data['success'] = false;
+    } else {
+        $data['success'] = true;
+        $data['user_info'] = getuserdata();
+    }
+
+
+    return $data;
+
+}
+
+function ghs_post(){
+
+    $data['success'] = false;
+
+    $args = [
+        'numberposts' => $_REQUEST['post_num'],
+        'category' => $_REQUEST['cat'],
+        'exclude' => $_REQUEST['ex']
+    ];
+
+    $post = get_posts($args);
+
+    if($post){
+
+        $data['success'] = true;
+        $data['posts'] = $post;
+
+        $key = 0;
+        foreach ($post as $p){
+
+            $thumb = get_the_post_thumbnail_url( $p->ID, 'medium_large' );
+
+            $data['post'][$key]['url'] = site_url('/') . 'blog/' . $p->post_name;
+            $data['post'][$key]['title'] = ucwords($p->post_title);
+            $data['post'][$key]['comment_count'] = $p->comment_count;
+            $data['post'][$key]['date'] = get_the_time('M j, Y', $p->ID);
+            $data['post'][$key]['id'] = $p->ID;
+            $data['post'][$key]['short_ver'] = substr($p->post_content, 0, 150) . ' <a href="' . site_url('/') . 'blog/' . $p->post_name . '" title="' . ucwords($p->post_title) . '" style="color: #8777ff;"> [more]</a>';
+            $data['post'][$key]['thumb'] = $thumb;
+
+            $key++;
+        }
+
+    }
 
     return $data;
 
