@@ -41,6 +41,13 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/carouselItems/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'carouselItems'
+        )
+    );
+
     register_rest_route('ghs_api/v1', '/signup/',
         array(
             'methods' => 'POST',
@@ -299,6 +306,58 @@ function ghs_post(){
     ];
 
     $post = get_posts($args);
+
+    if($post){
+
+        $data['success'] = true;
+        $data['posts'] = $post;
+
+        $key = 0;
+        foreach ($post as $p){
+
+            $thumb = get_the_post_thumbnail_url( $p->ID, 'medium_large' );
+
+            $data['post'][$key]['url'] = site_url('/') . 'blog/' . $p->post_name;
+            $data['post'][$key]['title'] = ucwords($p->post_title);
+            $data['post'][$key]['comment_count'] = $p->comment_count;
+            $data['post'][$key]['date'] = get_the_time('M j, Y', $p->ID);
+            $data['post'][$key]['id'] = $p->ID;
+            $data['post'][$key]['short_ver'] = substr($p->post_content, 0, 150) . ' <a href="' . site_url('/') . 'blog/' . $p->post_name . '" title="' . ucwords($p->post_title) . '" style="color: #8777ff;"> [more]</a>';
+            $data['post'][$key]['thumb'] = $thumb;
+
+            $key++;
+        }
+
+    }
+
+    return $data;
+
+}
+
+function carouselItems(){
+
+    $data['success'] = false;
+
+    $post1 = get_posts(
+        array(
+        'numberposts' => 1,
+        'category' => 94
+        )
+    );
+    $post2 = get_posts(
+        array(
+            'numberposts' => 1,
+            'category' => 71
+        )
+    );
+    $post3 = get_posts(
+        array(
+            'numberposts' => 1,
+            'category' => 51
+        )
+    );
+
+    $post = array_merge($post1, $post2, $post3);
 
     if($post){
 
