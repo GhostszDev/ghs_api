@@ -142,34 +142,44 @@ function mailing(){
 function signup(){
 
     $data['success'] = false;
+    global $wpdb;
 
     $new_user = [
-        'user_name' => $_REQUEST['user_name'],
-        'first_name' => $_REQUEST['first_name'],
-        'last_name' => $_REQUEST['last_name'],
-        'email'  => $_REQUEST['email'],
-        'password'  => $_REQUEST['password'],
-        'mailing' => $_REQUEST['mailing']
+        'user_login' => $_REQUEST['user_name'],
+        'firstName' => $_REQUEST['first_name'],
+        'lastName' => $_REQUEST['last_name'],
+        'user_email'  => $_REQUEST['email'],
+        'user_pass'  => $_REQUEST['password'],
+        'gender' => $_REQUEST['gender'],
+        'birthday' => $_REQUEST['birthday']
     ];
 
-    if ( username_exists($new_user['user_name']) || email_exists($new_user['email']) ) {
-        $data['message'] = "Username and/or Email is unavailable";
+    if ( username_exists($new_user['user_login']) || email_exists($new_user['user_email']) ) {
+        $data['error_message'] = "Username and/or Email is unavailable";
     }else{
-        if($new_user['password']){
-            $created = wp_create_user( $new_user['user_name'], $new_user['password'], $new_user['email'] );
 
-            if($new_user['mailing']){
-                $data['mailing'] = insert_mailing_user($new_user);
+        if($new_user['user_pass']){
+            $created = $wpdb->insert('wp_users', $new_user);
+            $data['test'] = $wpdb->last_query;
+
+            if($created){
+                $data['success'] = true;
+                $data['message'] = "User was created!";
+
+                if($new_user['mailing']){
+                    $data['mailing'] = insert_mailing_user($new_user);
+                } else {
+                    $data['mailing'] = 'Not on the mailing list';
+                }
+
+            }else{
+                $data['success'] = false;
+                $data['error_message'] = "Error: User was not created!";
             }
+
 
         } else {
             $data['message'] = "Please enter a password";
-        }
-
-        if($created){
-            $data['success'] = true;
-            $data['message'] = "User has been created";
-            $data['user'] = $new_user;
         }
 
     }
@@ -280,14 +290,16 @@ function login(){
         'remember' => $_REQUEST['remember']
     ];
 
-    $user = wp_signon( $cred, false );
+    $user = wp_signon( $cred, true );
 
     if ( is_wp_error($user) ){
         $data['error_message'] = "Please check your username/and or password.";
         $data['success'] = false;
     } else {
         $data['success'] = true;
-        $data['user_info'] = getuserdata();
+        wp_set_auth_cookie($user->data->ID);
+        do_action('wp_login', $user->data);
+        $data['userInfo'] = $user->data;
     }
 
 
@@ -310,7 +322,7 @@ function ghs_post(){
     if($post){
 
         $data['success'] = true;
-        $data['posts'] = $post;
+//        $data['posts'] = $post;
 
         $key = 0;
         foreach ($post as $p){
@@ -362,7 +374,7 @@ function carouselItems(){
     if($post){
 
         $data['success'] = true;
-        $data['posts'] = $post;
+//        $data['posts'] = $post;
 
         $key = 0;
         foreach ($post as $p){
@@ -374,7 +386,7 @@ function carouselItems(){
             $data['post'][$key]['comment_count'] = $p->comment_count;
             $data['post'][$key]['date'] = get_the_time('M j, Y', $p->ID);
             $data['post'][$key]['id'] = $p->ID;
-            $data['post'][$key]['short_ver'] = substr($p->post_content, 0, 150) . ' <a href="' . site_url('/') . 'blog/' . $p->post_name . '" title="' . ucwords($p->post_title) . '" style="color: #8777ff;"> [more]</a>';
+            $data['post'][$key]['short_ver'] = substr($p->post_content, 0, 150) . '<a href="' . site_url('/') . 'blog/' . $p->post_name . '" title="' . ucwords($p->post_title) . '" style="color: #8777ff;"> [more]</a>';
             $data['post'][$key]['thumb'] = $thumb;
 
             $key++;
