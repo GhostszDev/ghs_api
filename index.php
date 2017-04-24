@@ -75,6 +75,13 @@ function ghs_webservice_route(){
             'callback' => 'post_comment'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/sendgameData/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'sendgameData'
+        )
+    );
 }
 
 function logout(){
@@ -154,13 +161,14 @@ function signup(){
         'birthday' => $_REQUEST['birthday']
     ];
 
+    $data['test'] = $new_user;
+
     if ( username_exists($new_user['user_login']) || email_exists($new_user['user_email']) ) {
         $data['error_message'] = "Username and/or Email is unavailable";
     }else{
 
         if($new_user['user_pass']){
             $created = $wpdb->insert('wp_users', $new_user);
-            $data['test'] = $wpdb->last_query;
 
             if($created){
                 $data['success'] = true;
@@ -219,27 +227,62 @@ function getuserdata(){
 
 }
 
-function send_highscore(){
+function sendgameData(){
     global $wpdb;
 
     $data['success'] = false;
+//    $data['gameToken'] = "World Def'er: " . md5('WorldDefer');
 
-    $game = $_REQUEST['game'];
+    $game = $_REQUEST['gameID'];
+    $score = $_REQUEST['score'];
+    $userID = $_REQUEST['userID'];
 
-    if($game){
+//    $data['userID'] = $userID;
 
-        $stats = [
-            'score' => $_REQUEST['score'],
-            'gamer_id' => $_REQUEST['user_id']
-        ];
+    $getGameID = $wpdb->get_results( "SELECT ID, db_name FROM `game_list` WHERE `token` LIKE '" . $game . "'" );
 
-        $wpdb->insert($game, $stats);
+//    $data['test'] = $getGameID[0]->db_name;
+
+    if($getGameID){
+
         $data['success'] = true;
+        $isUserThere = $wpdb->get_results( "SELECT userID FROM `". $getGameID[0]->db_name ."` WHERE `userID` LIKE '" . $userID . "'" );
+//        $data['last_query'] = $wpdb->last_query;
+//        $data['isUserThere'] = $isUserThere;
+
+        if(!$isUserThere) {
+
+            if ($score) {
+                $wpdb->insert(
+                    $getGameID[0]->db_name,
+                    array(
+                        'score' => $score,
+                        'userID' => $userID
+                        )
+                );
+                $data['message'] = "Score was added!";
+            }
+
+        } else {
+
+            if ($score) {
+                $wpdb->update(
+                    $getGameID[0]->db_name,
+                    array(
+                        'score' => $score,
+                        'userID' => $userID
+                    ),
+                    array('userID' => $userID)
+                );
+                $data['message'] = "Score was added!";
+            }
+
+        }
 
     } else {
 
         $data['success'] = false;
-        $data['error_message'] = "Their is no such game!";
+        $data['error_message'] = "Score failed to be uploaded!";
 
     }
 
@@ -299,9 +342,15 @@ function login(){
         $data['success'] = true;
         wp_set_auth_cookie($user->data->ID);
         do_action('wp_login', $user->data);
-        $data['userInfo'] = $user->data;
-    }
+        $userInfo = $user->data;
 
+        $data['ID'] = $userInfo->ID;
+        $data['firstName'] = $userInfo->firstName;
+        $data['lastName'] = $userInfo->lastName;
+        $data['userName'] = $userInfo->user_login;
+        $data['email'] = $userInfo->user_email;
+        $data['password'] = $cred['user_password'];
+    }
 
     return $data;
 
