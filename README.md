@@ -10,9 +10,9 @@ Logout    | GET   | /ghs_api/v1/logout/ | This allows user to sign out from site
 Social | POST | /ghs_api/v1/social/ | Sign in the user using his social key | NO
 [Mail List](#mail-list) | POST | /ghs_api/v1/mailing/ | Signs email of user to mailing list database | YES
 
-#Functions
+# Functions
 
-###Login
+### Login
 Params         | Desc                                                                                   |
 ---------------|----------------------------------------------------------------------------------------|
 user_login     | This is the email and/or username of the user who is trying to login                   |
@@ -20,7 +20,7 @@ user_password  | This is the password that the user made to grant access to the 
 remember       | This allows the site to remember the user info for about 90 days as stated by wordpress|
 Returns        | All info needed for the user to have access to the site (i.e. username, ID and etc.    |
 
-###SignUp
+### SignUp
 Params       | Desc                                                       |
 -------------|------------------------------------------------------------|
 user_login   | This is the new user's username                            |
@@ -32,7 +32,7 @@ gender       | The gender of the user                                     |
 birthday     | The birthday connected to the user                         |
 Returns      | Returns success or failure for the creation of the account |
 
-###Send Game Data
+### Send Game Data
 Params     | Desc                                                                                                      |
 -----------|-----------------------------------------------------------------------------------------------------------|
 gameID     | This is the token value for the game to be recognized by the system to store all data regarding the game. |
@@ -40,7 +40,7 @@ score      | This is the number value for the score                             
 userID     | This sends the user ID to games database                                                                  |
 Returns    | This returns a success or failure and a message                                                           |
 
-###Mail List
+### Mail List
 Params     | Desc                                               |
 -----------|----------------------------------------------------|
 first_name | This is the first name of the mail list subscriber |
@@ -48,7 +48,7 @@ last_name  | This is the last name of the mail list subscriber  |
 email      | This is the email of the mail list subscriber      |
 Returns    | This returns a success or failure and a message    |
 
-#Update Log
+# Update Log
 All updates and changes are mentioned below
 
 * Updated README.md (Now you can see all changes with update log. Also add a function section to keep track of all process.) 
