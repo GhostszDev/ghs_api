@@ -82,6 +82,13 @@ function ghs_webservice_route(){
             'callback' => 'sendgameData'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/singlePost/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'singlePost'
+        )
+    );
 }
 
 function logout(){
@@ -441,6 +448,26 @@ function carouselItems(){
             $key++;
         }
 
+    }
+
+    return $data;
+
+}
+
+function singlePost(){
+
+    $data['success'] = false;
+
+    $post_id = $_REQUEST['postID'];
+
+    $post = get_post($post_id);
+
+    if(!$post){
+        $data['error_message'] = "No Post with ID: " . $post_id;
+    } else {
+
+        $data['success'] = true;
+        $data['post'] = $post;
     }
 
     return $data;

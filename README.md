@@ -9,6 +9,7 @@ Logout    | GET   | /ghs_api/v1/logout/ | This allows user to sign out from site
 [Send Game Data](#send-game-data) | POST | /ghs_api/v1/sendgameData/ | This get the current user data | YES
 Social | POST | /ghs_api/v1/social/ | Sign in the user using his social key | NO
 [Mail List](#mail-list) | POST | /ghs_api/v1/mailing/ | Signs email of user to mailing list database | YES
+[Single Post](#single-post) | POST | /ghs_api/singlePost/ | This gets a single post | YES
 
 # Functions
 
@@ -47,6 +48,12 @@ first_name | This is the first name of the mail list subscriber |
 last_name  | This is the last name of the mail list subscriber  |
 email      | This is the email of the mail list subscriber      |
 Returns    | This returns a success or failure and a message    |
+
+### Single Post
+Params  | Desc                                           |
+--------|------------------------------------------------|
+postID  | This is the ID for the post that is selected.  |
+Returns | This returns all elements for the current post |
 
 # Update Log
 All updates and changes are mentioned below
