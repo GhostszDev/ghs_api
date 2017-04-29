@@ -65,7 +65,7 @@ function ghs_webservice_route(){
     register_rest_route('ghs_api/v1', '/getuserdata/',
         array(
             'methods' => 'POST',
-            'callback' => 'mailing'
+            'callback' => 'getuserdata'
         )
     );
 
@@ -87,6 +87,13 @@ function ghs_webservice_route(){
         array(
             'methods' => 'POST',
             'callback' => 'singlePost'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/getComments/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'getComments'
         )
     );
 }
@@ -168,7 +175,7 @@ function signup(){
         'birthday' => $_REQUEST['birthday']
     ];
 
-    $data['test'] = $new_user;
+//    $data['test'] = $new_user;
 
     if ( username_exists($new_user['user_login']) || email_exists($new_user['user_email']) ) {
         $data['error_message'] = "Username and/or Email is unavailable";
@@ -220,11 +227,29 @@ function getuserdata(){
 
     $data['success'] = false;
 
-    if ( is_user_logged_in() ) {
+    $user_ID = $_REQUEST['user_ID'];
 
-        $user = wp_get_current_user();
-        $data['user'] = $user;
+    $user = get_userdata($user_ID);
+//    $data['test'] = $user;
+
+    if($user){
+
         $data['success'] = true;
+
+        $data['user']['ID'] = $user->data->ID;
+        $data['user']['name'] = $user->data->firstName . ' ' . $user->data->lastName;
+        $data['user']['email'] = $user->data->user_email;
+        $data['user']['gender'] = $user->data->gender;
+        $data['user']['userName'] = $user->data->user_login;
+        $data['user']['birthday'] = $user->data->birthday;
+        $data['user']['role'] = $user->roles;
+        $data['user']['user_icon'] = get_avatar_url($user->data->ID, array(
+            'size'=> 40
+        ));
+        $data['user']['user_icon_big'] = get_avatar_url($user->data->ID, array(
+            'size'=> 72
+        ));
+
     } else {
 
         $data['error_message'] = "You're not currently signed in!";
@@ -302,11 +327,10 @@ function post_comment(){
 
     $data['success'] = false;
 
-    $comment_post_ID = $_REQUEST['comment_id'];
+    $comment_post_ID = $_REQUEST['postID'];
     $comment_author = $_REQUEST['user_name'];
     $comment_author_email = $_REQUEST['user_email'];
     $comment_content = $_REQUEST['comment'];
-    $comment_type = $_REQUEST['comment_type'];
     $comment_parent = $_REQUEST['comment_parent'];
     $user_id = $_REQUEST['user_id'];
 
@@ -316,7 +340,7 @@ function post_comment(){
         'comment_author_email' => $comment_author_email, //fixed value - can be dynamic
         'comment_author_url' => '', //fixed value - can be dynamic
         'comment_content' => $comment_content, //fixed value - can be dynamic
-        'comment_type' => $comment_type, //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
+        'comment_type' => '', //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
         'comment_parent' => $comment_parent, //0 if it's not a reply to another comment; if it's a reply, mention the parent comment ID here
         'user_id' => $user_id, //passing current user ID or any predefined as per the demand
     );
@@ -326,6 +350,8 @@ function post_comment(){
 
     if($comment_id){
         $data['success'] = true;
+    } else {
+        $data['error_message'] = "The comment failed to post";
     }
 
     return $data;
@@ -468,6 +494,48 @@ function singlePost(){
 
         $data['success'] = true;
         $data['post'] = $post;
+    }
+
+    return $data;
+
+}
+
+function getComments(){
+
+    $data['success'] = false;
+
+    $post = array(
+        'post_id' => $_REQUEST['postID']
+    );
+
+    $comments = get_comments($post);
+
+    if(!$comments){
+
+        $data['error_message'] = "No Comments";
+
+    }else{
+
+        $data['success'] = true;
+
+        $key = 0;
+        foreach ($comments as $c){
+
+            $data['comment'][$key]['comment_ID'] = $c->comment_ID;
+            $data['comment'][$key]['user'] = ucwords($c->comment_author);
+            $data['comment'][$key]['user_ID'] = $c->user_id;
+            $data['comment'][$key]['date'] = get_comment_date('m/d/Y', $c->comment_ID);
+            $data['comment'][$key]['comment'] = $c->comment_content;
+            $data['comment'][$key]['comment_parent'] = $c->comment_parent;
+            $data['comment'][$key]['comment_parent'] = $c->comment_parent;
+            $data['comment'][$key]['user_img'] = get_avatar_url($c->comment_ID, array(
+                'size'=> 40
+            ));
+
+            $key++;
+
+        }
+
     }
 
     return $data;
