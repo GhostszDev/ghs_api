@@ -237,10 +237,10 @@ function getuserdata(){
         $data['success'] = true;
 
         $data['user']['ID'] = $user->data->ID;
-        $data['user']['name'] = $user->data->firstName . ' ' . $user->data->lastName;
+        $data['user']['name'] = ucwords($user->data->firstName . ' ' . $user->data->lastName);
         $data['user']['email'] = $user->data->user_email;
         $data['user']['gender'] = $user->data->gender;
-        $data['user']['userName'] = $user->data->user_login;
+        $data['user']['userName'] = ucwords($user->data->user_login);
         $data['user']['birthday'] = $user->data->birthday;
         $data['user']['role'] = $user->roles;
         $data['user']['user_icon'] = get_avatar_url($user->data->ID, array(

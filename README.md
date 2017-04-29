@@ -1,17 +1,18 @@
 # [<img src="http://ghostszmusic.com/wp-content/uploads/2017/01/small-logo.png" style="width:35px !important;"> GHS API for wordpress](https://ghostszmusic.com)
 This API is for connecting mobile and desktop to become one unified platform.
 
-Function                          | Method| Url                       | Usage                                           | Completion |
-----------------------------------|-------|---------------------------|-------------------------------------------------|------------|
-[Login](#login)                   | POST  | /ghs_api/v1/login/        | This allows users to login remotely to site     | YES
-Logout                            | GET   | /ghs_api/v1/logout/       | This allows user to sign out from site remotely | NO
-[SignUp](#signup)                 | POST  | /ghs_api/v1/signup/       | This allows user to sign up to site remotely    | YES
-[Get User Data](#get-user-data)   | POST  | /ghs_api/v1/getuserdata/  | This get the users info from the database       | YES
-[Send Game Data](#send-game-data) | POST  | /ghs_api/v1/sendgameData/ | This get the current user data                  | YES
-Social                            | POST  | /ghs_api/v1/social/       | Sign in the user using his social key           | NO
-[Mail List](#mail-list)           | POST  | /ghs_api/v1/mailing/      | Signs email of user to mailing list database    | YES
-[Get Comments](#get-comments)     | POST  | /ghs_api/v1/getComments/  | Signs email of user to mailing list database    | YES
-[Single Post](#single-post)       | POST  | /ghs_api/singlePost/      | This gets a single post                         | YES
+Function                          | Method| Url                       | Usage                                               | Completion |
+----------------------------------|-------|---------------------------|-----------------------------------------------------|------------|
+[Login](#login)                   | POST  | /ghs_api/v1/login/        | This allows users to login remotely to site         | YES
+Logout                            | GET   | /ghs_api/v1/logout/       | This allows user to sign out from site remotely     | NO
+[SignUp](#signup)                 | POST  | /ghs_api/v1/signup/       | This allows user to sign up to site remotely        | YES
+[Get User Data](#get-user-data)   | POST  | /ghs_api/v1/getuserdata/  | This get the users info from the database           | YES
+[Send Game Data](#send-game-data) | POST  | /ghs_api/v1/sendgameData/ | This get the current user data                      | YES
+Social                            | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | NO
+[Mail List](#mail-list)           | POST  | /ghs_api/v1/mailing/      | Signs email of user to mailing list database        | YES
+[Post Comments](#post-comments)   | POST  | /ghs_api/v1/post_comment/ | This allow user to post comments to any post        | YES
+[Get Comments](#get-comments)     | POST  | /ghs_api/v1/getComments/  | This get teh comments for what post is currently up | YES
+[Single Post](#single-post)       | POST  | /ghs_api/singlePost/      | This gets a single post                             | YES
 
 # Functions
 
@@ -57,6 +58,17 @@ last_name  | This is the last name of the mail list subscriber  |
 email      | This is the email of the mail list subscriber      |
 Returns    | This returns a success or failure and a message    |
 
+### Post Comments
+Params          | Desc                                               |
+----------------|----------------------------------------------------|
+postID          | This is the ID for the current post                |
+user_id         | This is the comment posters user ID                |
+user_name       | This is the comment posters user name              |
+user_email      | This is the comment posters user email             |
+comment         | This is the comment posters comment string         |
+comment_parent  | This receives a 1 or 0 if it's a reply or not      |
+Returns         | This returns success or failure                    |
+
 ### Get Comments
 Params  | Desc                                              |
 --------|---------------------------------------------------|
@@ -72,6 +84,7 @@ Returns | This returns all elements for the current post |
 # Update Log
 All updates and changes are mentioned below
 
+* Users are now able to post comments (04/29/17)
 * Get User Data now added (04/28/17)
 * comment list now pulled by the post id (04/28/17)
 * Added functionality for getting a single post by using post id. (04/28/17)
