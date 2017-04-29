@@ -72,6 +72,8 @@ Returns | This returns all elements for the current post |
 # Update Log
 All updates and changes are mentioned below
 
+* Get User Data now added (04/28/17)
+* comment list now pulled by the post id (04/28/17)
 * Added functionality for getting a single post by using post id. (04/28/17)
 * Updated README.md (Now you can see all changes with update log. Also add a function section to keep track of all process.) 
 * sendgameData now fully functional (This allows the user to send and/or update their scores in the database.)
