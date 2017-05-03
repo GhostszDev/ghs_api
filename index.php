@@ -606,10 +606,16 @@ function addFriend(){
 function grabGameList(){
 
     global $wpdb;
+    $data['success'] = false;
 
-    $game = $wpdb->get_results( "SELECT `ID`, `img`, `Name` FROM `game_list` " );
+    $game = $wpdb->get_results( "SELECT `ID`, `img`, `Name`, `link`, 'des' FROM `game_list` " );
 
-    $data['gameList'] = $game;
+    if($game){
+        $data['success'] = true;
+        $data['gameList'] = $game;
+    } else {
+        $data['error_message'] = "No games available";
+    }
 
     return $data;
 
