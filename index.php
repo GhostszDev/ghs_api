@@ -96,6 +96,34 @@ function ghs_webservice_route(){
             'callback' => 'getComments'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/friendsList/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'friendsList'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/addFriend/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'addFriend'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/grabGameList/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'grabGameList'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/searchFriend/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'searchFriend'
+        )
+    );
 }
 
 function logout(){
@@ -537,6 +565,51 @@ function getComments(){
         }
 
     }
+
+    return $data;
+
+}
+
+function friendsList(){
+
+    $userID = $_REQUEST['userID'];
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $friends = $wpdb->get_results( "SELECT * FROM friends WHERE userID LIKE '". $userID ."'");
+
+    if($friends){
+
+        $data['success'] = true;
+        $data['friend'] = $friends;
+
+    } else {
+
+        $data['message'] = "Please add a friend for your list.";
+
+    }
+
+    return $data;
+
+}
+
+function addFriend(){
+
+    $data['success'] = false;
+    $userID = $_REQUEST['userID'];
+    $friendID = $_REQUEST['friendID'];
+    $data['test'] = $userID;
+
+}
+
+function grabGameList(){
+
+    global $wpdb;
+
+    $game = $wpdb->get_results( "SELECT `ID`, `img`, `Name` FROM `game_list` " );
+
+    $data['gameList'] = $game;
 
     return $data;
 

@@ -1,18 +1,21 @@
 # [<img src="http://ghostszmusic.com/wp-content/uploads/2017/01/small-logo.png" style="width:35px !important;"> GHS API for wordpress](https://ghostszmusic.com)
 This API is for connecting mobile and desktop to become one unified platform.
 
-Function                          | Method| Url                       | Usage                                               | Completion |
-----------------------------------|-------|---------------------------|-----------------------------------------------------|------------|
-[Login](#login)                   | POST  | /ghs_api/v1/login/        | This allows users to login remotely to site         | YES
-Logout                            | GET   | /ghs_api/v1/logout/       | This allows user to sign out from site remotely     | NO
-[SignUp](#signup)                 | POST  | /ghs_api/v1/signup/       | This allows user to sign up to site remotely        | YES
-[Get User Data](#get-user-data)   | POST  | /ghs_api/v1/getuserdata/  | This get the users info from the database           | YES
-[Send Game Data](#send-game-data) | POST  | /ghs_api/v1/sendgameData/ | This get the current user data                      | YES
-Social                            | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | NO
-[Mail List](#mail-list)           | POST  | /ghs_api/v1/mailing/      | Signs email of user to mailing list database        | YES
-[Post Comments](#post-comments)   | POST  | /ghs_api/v1/post_comment/ | This allow user to post comments to any post        | YES
-[Get Comments](#get-comments)     | POST  | /ghs_api/v1/getComments/  | This get teh comments for what post is currently up | YES
-[Single Post](#single-post)       | POST  | /ghs_api/singlePost/      | This gets a single post                             | YES
+Function                            | Method| Url                       | Usage                                               | Completion |
+------------------------------------|-------|---------------------------|-----------------------------------------------------|------------|
+[Login](#login)                     | POST  | /ghs_api/v1/login/        | This allows users to login remotely to site         | YES
+Logout                              | GET   | /ghs_api/v1/logout/       | This allows user to sign out from site remotely     | NO
+[SignUp](#signup)                   | POST  | /ghs_api/v1/signup/       | This allows user to sign up to site remotely        | YES
+[Get User Data](#get-user-data)     | POST  | /ghs_api/v1/getuserdata/  | This get the users info from the database           | YES
+[Send Game Data](#send-game-data)   | POST  | /ghs_api/v1/sendgameData/ | This get the current user data                      | YES
+Social                              | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | NO
+[Mail List](#mail-list)             | POST  | /ghs_api/v1/mailing/      | Signs email of user to mailing list database        | YES
+[Post Comments](#post-comments)     | POST  | /ghs_api/v1/post_comment/ | This allow user to post comments to any post        | YES
+[Get Comments](#get-comments)       | POST  | /ghs_api/v1/getComments/  | This get teh comments for what post is currently up | YES
+[Single Post](#single-post)         | POST  | /ghs_api/singlePost/      | This gets a single post                             | YES
+[Add Friend](#add-friend)           | POST  | /ghs_api/addfriend/       | This add a user to a another users friends list     | YES
+[Friends List](#friends-list)       | POST  | /ghs_api/friendsList/     | This gets a users friends list                      | NO
+[Grab Games List](#grab-games-list) | GET   | /ghs_api/grabGameList/    | This grabs the games list                           | YES
 
 # Functions
 
@@ -81,9 +84,28 @@ Params  | Desc                                           |
 postID  | This is the ID for the post that is selected.  |
 Returns | This returns all elements for the current post |
 
+### Adding Friends
+Params    | Desc                              |
+----------|-----------------------------------|
+userID    | This is the users ID              |
+friendID  | This is the friend ID             |
+Returns   | This returns success or failure   |
+
+### Friends List
+Params  | Desc                              |
+--------|-----------------------------------|
+userID  | This is the users ID              |
+Returns | This returns a users friends list |
+
+### Grab Games List
+Params  | Desc                           |
+--------|--------------------------------|
+Returns | This returns the games list    |
+
 # Update Log
 All updates and changes are mentioned below
 
+* Grabbing game list done! (05/03/17)
 * Users are now able to post comments (04/29/17)
 * Get User Data now added (04/28/17)
 * comment list now pulled by the post id (04/28/17)
