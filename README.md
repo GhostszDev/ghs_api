@@ -16,6 +16,7 @@ Social                              | POST  | /ghs_api/v1/social/       | Sign i
 [Add Friend](#add-friend)           | POST  | /ghs_api/addfriend/       | This add a user to a another users friends list     | YES
 [Friends List](#friends-list)       | POST  | /ghs_api/friendsList/     | This gets a users friends list                      | NO
 [Grab Games List](#grab-games-list) | GET   | /ghs_api/grabGameList/    | This grabs the games list                           | YES
+[Contact Us](#contact-us)           | POST  | /ghs_api/contactUs/       | Allows the user to send a message to company        | YES
 
 # Functions
 
@@ -102,9 +103,18 @@ Params  | Desc                           |
 --------|--------------------------------|
 Returns | This returns the games list    |
 
+### Contact Us
+Params  | Desc                                             |
+--------|--------------------------------------------------|
+name    | The users name                                   |
+email   | The users email                                  |
+msg     | The users message to the comapny                 |
+Returns | This returns the message for success or failure  |
+
 # Update Log
 All updates and changes are mentioned below
 
+* Now users are able to contact us for any reason (05/03/17)
 * Grabbing game list done! (05/03/17)
 * Users are now able to post comments (04/29/17)
 * Get User Data now added (04/28/17)

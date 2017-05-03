@@ -124,6 +124,13 @@ function ghs_webservice_route(){
             'callback' => 'searchFriend'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/contactUs/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'contactUs'
+        )
+    );
 }
 
 function logout(){
@@ -615,6 +622,46 @@ function grabGameList(){
         $data['gameList'] = $game;
     } else {
         $data['error_message'] = "No games available";
+    }
+
+    return $data;
+
+}
+
+function contactUs(){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $contact = array(
+        "name" => $_REQUEST['name'],
+        "email" => $_REQUEST['email'],
+        "msg" => $_REQUEST['msg']
+    );
+
+//    $data['test'] = $contact;
+
+    if(!$contact['name'] || !$contact['email'] || !$contact['msg']){
+
+        $data['success'] = false;
+        $data['error_message'] = "Something went wrong when sending the contact us message.";
+
+    } else {
+
+        $check = $wpdb->insert('contact-Us', $contact);
+
+        if($check){
+
+            $data['success'] = true;
+            $data['message'] = "Message has been sent";
+
+        } else {
+
+            $data['success'] = false;
+            $data['error_message'] = "Something went wrong when sending the contact us message to us.";
+
+        }
+
     }
 
     return $data;
