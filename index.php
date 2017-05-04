@@ -261,6 +261,7 @@ function social(){
 function getuserdata(){
 
     $data['success'] = false;
+    global $wpdb;
 
     $user_ID = $_REQUEST['user_ID'];
 
@@ -284,6 +285,21 @@ function getuserdata(){
         $data['user']['user_icon_big'] = get_avatar_url($user->data->ID, array(
             'size'=> 72
         ));
+        $data['user']['user_icon_100'] = get_avatar_url($user->data->ID, array(
+            'size'=> 100
+        ));
+
+        $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
+
+        if($img){
+
+            $data['user']['backgroundImg'] = $img;
+
+        } else {
+
+            $data['user']['backgroundImg'] = "/wp-content/uploads/2017/05/profile-bg.png";
+
+        }
 
     } else {
 
@@ -590,6 +606,13 @@ function friendsList(){
 
         $data['success'] = true;
         $data['friend'] = $friends;
+
+        $key = 0;
+        foreach ($friends as $f){
+            $key++;
+        };
+
+        $data['friendCount'] = $key;
 
     } else {
 
