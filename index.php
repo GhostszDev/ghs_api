@@ -125,6 +125,13 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/userFeed/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'userFeed'
+        )
+    );
+
     register_rest_route('ghs_api/v1', '/contactUs/',
         array(
             'methods' => 'POST',
@@ -600,15 +607,36 @@ function friendsList(){
     $data['success'] = false;
     global $wpdb;
 
-    $friends = $wpdb->get_results( "SELECT * FROM friends WHERE userID LIKE '". $userID ."'");
+    $friends = $wpdb->get_results( "SELECT friendID, approved FROM friends WHERE userID LIKE '". $userID ."'");
 
     if($friends){
 
         $data['success'] = true;
-        $data['friend'] = $friends;
 
         $key = 0;
         foreach ($friends as $f){
+
+            $gt = $wpdb->get_results( "SELECT ID, firstName, lastName, user_login, user_status FROM wp_users WHERE ID LIKE '". $f->friendID ."'");
+
+            foreach ($gt as $r){
+
+                $data['friend'][$key]['ID'] = $r->ID;
+                $data['friend'][$key]['firstName'] = $r->firstName;
+                $data['friend'][$key]['lastName'] = $r->lastName;
+                $data['friend'][$key]['userName'] = $r->user_login;
+
+                if($r->user_status == 0){
+                    $data['friend'][$key]['status'] = "offline";
+                } else {
+                    $data['friend'][$key]['status'] = "online";
+                }
+
+                $data['friend'][$key]['user_icon'] = get_avatar_url($r->ID, array(
+                    'size'=> 40
+                ));
+
+            }
+
             $key++;
         };
 
@@ -684,6 +712,57 @@ function contactUs(){
             $data['error_message'] = "Something went wrong when sending the contact us message to us.";
 
         }
+
+    }
+
+    return $data;
+
+}
+
+function userFeed(){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $check = $wpdb->get_results( "SELECT `userID`, `comment`, `date` FROM `userFeed` " );
+
+    $key = 0;
+
+    if($check) {
+
+        $data['success'] = true;
+
+        foreach ($check as $c) {
+
+            $data['feed'][$key]['comment'] = $c->comment;
+
+            $time = strtotime($c->date);
+            $date = date("m/d/y", $time);
+
+            $data['feed'][$key]['date'] = $date;
+
+            $user = $wpdb->get_results("SELECT ID, firstName, lastName, user_login FROM wp_users WHERE ID LIKE '" . $c->userID . "'");
+
+            foreach ($user as $r) {
+
+                $data['feed'][$key]['ID'] = $r->ID;
+                $data['feed'][$key]['firstName'] = ucwords($r->firstName);
+                $data['feed'][$key]['lastName'] = ucwords($r->lastName);
+                $data['feed'][$key]['userName'] = ucwords($r->user_login);
+
+                $data['feed'][$key]['user_icon'] = get_avatar_url($r->ID, array(
+                    'size' => 40
+                ));
+
+            }
+
+            $key++;
+
+        }
+    } else {
+
+        $data['success'] = false;
+        $data['error_message'] = "No comments...";
 
     }
 

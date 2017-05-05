@@ -17,6 +17,7 @@ Social                              | POST  | /ghs_api/v1/social/       | Sign i
 [Friends List](#friends-list)       | POST  | /ghs_api/friendsList/     | This gets a users friends list                      | NO
 [Grab Games List](#grab-games-list) | GET   | /ghs_api/grabGameList/    | This grabs the games list                           | YES
 [Contact Us](#contact-us)           | POST  | /ghs_api/contactUs/       | Allows the user to send a message to company        | YES
+[User Feed](#user-feed)             | POST  | /ghs_api/userFeed/        | This gets the users feed for their profile          | YES
 
 # Functions
 
@@ -111,9 +112,16 @@ email   | The users email                                  |
 msg     | The users message to the comapny                 |
 Returns | This returns the message for success or failure  |
 
+### User Feed
+Params  | Desc                              |
+--------|-----------------------------------|
+userID  | This is the users ID              |
+Returns | This returns a users news feed    |
+
 # Update Log
 All updates and changes are mentioned below
 
+* Added userfeed to user's profile (05/05/17)
 * Now users are able to contact us for any reason (05/03/17)
 * Grabbing game list done! (05/03/17)
 * Users are now able to post comments (04/29/17)
