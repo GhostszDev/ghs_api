@@ -14,10 +14,11 @@ Social                              | POST  | /ghs_api/v1/social/       | Sign i
 [Get Comments](#get-comments)       | POST  | /ghs_api/v1/getComments/  | This get teh comments for what post is currently up | YES
 [Single Post](#single-post)         | POST  | /ghs_api/singlePost/      | This gets a single post                             | YES
 [Add Friend](#add-friend)           | POST  | /ghs_api/addfriend/       | This add a user to a another users friends list     | YES
-[Friends List](#friends-list)       | POST  | /ghs_api/friendsList/     | This gets a users friends list                      | NO
+[Friends List](#friends-list)       | POST  | /ghs_api/friendsList/     | This gets a users friends list                      | YES
 [Grab Games List](#grab-games-list) | GET   | /ghs_api/grabGameList/    | This grabs the games list                           | YES
 [Contact Us](#contact-us)           | POST  | /ghs_api/contactUs/       | Allows the user to send a message to company        | YES
 [User Feed](#user-feed)             | POST  | /ghs_api/userFeed/        | This gets the users feed for their profile          | YES
+[User Update](#user-update)         | POST  | /ghs_api/userUpdate/      | This updates the users feed with updates and more   | YES
 
 # Functions
 
@@ -26,6 +27,7 @@ Params         | Desc                                                           
 ---------------|----------------------------------------------------------------------------------------|
 user_login     | This is the email and/or username of the user who is trying to login                   |
 user_password  | This is the password that the user made to grant access to the system                  |
+gameID         | This is gameID needed to grab the users score for the current game                     |
 remember       | This allows the site to remember the user info for about 90 days as stated by wordpress|
 Returns        | All info needed for the user to have access to the site (i.e. username, ID and etc.    |
 
@@ -118,9 +120,19 @@ Params  | Desc                              |
 userID  | This is the users ID              |
 Returns | This returns a users news feed    |
 
+### User Update
+Params          | Desc                                               |
+----------------|----------------------------------------------------|
+user_id         | This is the comment posters user ID                |
+comment         | This is the comment posters comment string         |
+Returns         | This returns success or failure                    |
+
 # Update Log
 All updates and changes are mentioned below
 
+* Added user profile commenting ()
+* Updated login function to include highscore data when sent the gameID (06/01/17)
+* Now users will get feed for comments left on post with post link (05/25/17)
 * Added userfeed to user's profile (05/05/17)
 * Now users are able to contact us for any reason (05/03/17)
 * Grabbing game list done! (05/03/17)

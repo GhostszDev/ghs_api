@@ -138,6 +138,28 @@ function ghs_webservice_route(){
             'callback' => 'contactUs'
         )
     );
+
+    register_rest_route('ghs_api/v1', '/userUpdate/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'userUpdate'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/badgeUnlock/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'badgeUnlock'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/edit_user/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'edit_user'
+        )
+    );
+
 }
 
 function logout(){
@@ -381,48 +403,17 @@ function sendgameData(){
 
 }
 
-function post_comment(){
-
-    $data['success'] = false;
-
-    $comment_post_ID = $_REQUEST['postID'];
-    $comment_author = $_REQUEST['user_name'];
-    $comment_author_email = $_REQUEST['user_email'];
-    $comment_content = $_REQUEST['comment'];
-    $comment_parent = $_REQUEST['comment_parent'];
-    $user_id = $_REQUEST['user_id'];
-
-    $commentdata = array(
-        'comment_post_ID' => $comment_post_ID, // to which post the comment will show up
-        'comment_author' => $comment_author, //fixed value - can be dynamic
-        'comment_author_email' => $comment_author_email, //fixed value - can be dynamic
-        'comment_author_url' => '', //fixed value - can be dynamic
-        'comment_content' => $comment_content, //fixed value - can be dynamic
-        'comment_type' => '', //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
-        'comment_parent' => $comment_parent, //0 if it's not a reply to another comment; if it's a reply, mention the parent comment ID here
-        'user_id' => $user_id, //passing current user ID or any predefined as per the demand
-    );
-
-//Insert new comment and get the comment ID
-    $comment_id = wp_new_comment( $commentdata );
-
-    if($comment_id){
-        $data['success'] = true;
-    } else {
-        $data['error_message'] = "The comment failed to post";
-    }
-
-    return $data;
-
-}
-
 function login(){
+
+    global $wpdb;
 
     $cred = [
         'user_login' => $_REQUEST['user_login'],
         'user_password' => $_REQUEST['user_password'],
         'remember' => $_REQUEST['remember']
     ];
+
+    $gameID = $_REQUEST['gameID'];
 
     $user = wp_signon( $cred, true );
 
@@ -441,6 +432,22 @@ function login(){
         $data['userName'] = $userInfo->user_login;
         $data['email'] = $userInfo->user_email;
         $data['password'] = $cred['user_password'];
+        $data['facebook'] = $userInfo->facebook;
+        $data['google'] = $userInfo->google;
+
+        if($gameID){
+
+            switch($gameID) {
+                case '7bd41fb04c8fac3edd23b749405d052a':
+                    $score = $wpdb->get_results("SELECT `ID`, `score` FROM `wdef_db` WHERE `ID` = '" . $userInfo->ID . "'");
+                    break;
+            }
+
+            if($score){
+                $data['highscore'] = $score[0]->score;
+            }
+
+        }
     }
 
     return $data;
@@ -579,13 +586,15 @@ function getComments(){
         $key = 0;
         foreach ($comments as $c){
 
+            $role = get_userdata($c->ID);
+
             $data['comment'][$key]['comment_ID'] = $c->comment_ID;
             $data['comment'][$key]['user'] = ucwords($c->comment_author);
             $data['comment'][$key]['user_ID'] = $c->user_id;
             $data['comment'][$key]['date'] = get_comment_date('m/d/Y', $c->comment_ID);
             $data['comment'][$key]['comment'] = $c->comment_content;
             $data['comment'][$key]['comment_parent'] = $c->comment_parent;
-            $data['comment'][$key]['comment_parent'] = $c->comment_parent;
+            $data['comment'][$key]['role'] = $role->roles[0];
             $data['comment'][$key]['user_img'] = get_avatar_url($c->comment_ID, array(
                 'size'=> 40
             ));
@@ -620,10 +629,13 @@ function friendsList(){
 
             foreach ($gt as $r){
 
+                $role = get_userdata($r->ID);
+
                 $data['friend'][$key]['ID'] = $r->ID;
                 $data['friend'][$key]['firstName'] = $r->firstName;
                 $data['friend'][$key]['lastName'] = $r->lastName;
                 $data['friend'][$key]['userName'] = $r->user_login;
+                $data['friend'][$key]['role'] = $role->roles[0];
 
                 if($r->user_status == 0){
                     $data['friend'][$key]['status'] = "offline";
@@ -724,7 +736,7 @@ function userFeed(){
     $data['success'] = false;
     global $wpdb;
 
-    $check = $wpdb->get_results( "SELECT `userID`, `comment`, `date` FROM `userFeed` " );
+    $check = $wpdb->get_results( "SELECT `userID`, `comment`, `date` FROM `userFeed` ORDER BY `date` DESC");
 
     $key = 0;
 
@@ -745,10 +757,13 @@ function userFeed(){
 
             foreach ($user as $r) {
 
+                $role = get_userdata($r->ID);
+
                 $data['feed'][$key]['ID'] = $r->ID;
                 $data['feed'][$key]['firstName'] = ucwords($r->firstName);
                 $data['feed'][$key]['lastName'] = ucwords($r->lastName);
                 $data['feed'][$key]['userName'] = ucwords($r->user_login);
+                $data['feed'][$key]['role'] = $role->roles[0];
 
                 $data['feed'][$key]['user_icon'] = get_avatar_url($r->ID, array(
                     'size' => 40
@@ -769,3 +784,152 @@ function userFeed(){
     return $data;
 
 }
+
+function userUpdate($userID, $comment){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $user = array(
+        'userID' => $_REQUEST['userID'] ?: $userID,
+        'comment' => $_REQUEST['comment'] ?: $comment
+    );
+
+    $data['comment'] = $user['comment'];
+
+
+
+    if($user['userID'] && $user['comment']){
+
+        $update = $wpdb->insert('userFeed', $user);
+
+        if($update){
+
+            $data['success'] = true;
+
+        } else {
+
+            $data['success'] = false;
+            $data['error_message'] = "Status updated failed!";
+
+        }
+
+    } else {
+
+        $data['success'] = false;
+        $data['error_message'] = "Missing some params for updating your status.";
+
+    }
+
+    return $data;
+
+}
+
+function badgeUnlock(){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $unlock = array(
+      'userID' => $_REQUEST['userID'],
+      'badgeID' => $_REQUEST['badgeID'],
+      'gameID' => $_REQUEST['gameID']
+    );
+
+    $userName = get_userdata($unlock['userID']);
+
+    if($unlock['userID'] && $unlock['badgeID']){
+
+        switch($unlock['gameID']) {
+
+            case '7bd41fb04c8fac3edd23b749405d052a':
+                $getBadge = $wpdb->get_results("SELECT `ID`, `badgeName`, `badgeImg` FROM `wd_badges` WHERE `ID` = '" . $unlock['badgeID'] . "'");
+
+                if ($getBadge) {
+                    $data['success'] = true;
+
+                    foreach ($getBadge as $badge) {
+
+                        $unlockUpdate = "<div class='col-xs-4'>
+                        <img style='width: 100%' src='". site_url() . $badge->badgeImg . "' />
+                    </div>
+                    <div class='col-xs-8'>
+                        <p>" . ucwords($userName->user_login) . " just unlocked '" . $badge->badgeName . "' Badge</p>
+                    </div>";
+
+                        $j = userUpdate($unlock['userID'], $unlockUpdate);
+
+
+                    }
+
+
+                } else {
+
+                    $data['success'] = false;
+                    $data['error_message'] = "No such badge and/or game exist!";
+
+                }
+            break;
+        }
+
+    }
+
+    return $data;
+}
+
+function post_comment(){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $comment_post_ID = $_REQUEST['postID'];
+    $comment_author = $_REQUEST['user_name'];
+    $comment_author_email = $_REQUEST['user_email'];
+    $comment_content = $_REQUEST['comment'];
+    $comment_parent = $_REQUEST['comment_parent'];
+    $user_id = $_REQUEST['user_id'];
+    $userName = get_userdata($user_id);
+
+    $userFeedCom = "<div class='col-xs-4'>
+                        <a href='" . get_post_permalink($comment_post_ID) . "'><img style='width: 100%' src='" . get_the_post_thumbnail_url($comment_post_ID) . "' /></a>
+                    </div>
+                    <div class='col-xs-8'>
+                        <p>" . $userName->user_login . " posted " . substr($comment_content, 0, 100) . "</p>
+                    </div>";
+
+    $user = array(
+        "userID" => $user_id,
+        "comment" => $userFeedCom
+    );
+
+    $commentdata = array(
+        'comment_post_ID' => $comment_post_ID, // to which post the comment will show up
+        'comment_author' => $comment_author, //fixed value - can be dynamic
+        'comment_author_email' => $comment_author_email, //fixed value - can be dynamic
+        'comment_author_url' => '', //fixed value - can be dynamic
+        'comment_content' => $comment_content, //fixed value - can be dynamic
+        'comment_type' => '', //empty for regular comments, 'pingback' for pingbacks, 'trackback' for trackbacks
+        'comment_parent' => $comment_parent, //0 if it's not a reply to another comment; if it's a reply, mention the parent comment ID here
+        'user_id' => $user_id, //passing current user ID or any predefined as per the demand
+    );
+
+//Insert new comment and get the comment ID
+    $comment_id = wp_new_comment( $commentdata );
+
+    if($comment_id){
+        $data['success'] = true;
+
+        if($comment_parent == 0) {
+            $userFeed = $wpdb->insert('userFeed', $user);
+            $data['userFeed'] = $userFeed;
+        }
+
+    } else {
+        $data['error_message'] = "The comment failed to post";
+    }
+
+    return $data;
+
+}
+
+function edit_user(){}
