@@ -785,19 +785,16 @@ function userFeed(){
 
 }
 
-function userUpdate($userID, $comment){
+function userUpdate($userID = "", $comment = ""){
 
     $data['success'] = false;
     global $wpdb;
 
     $user = array(
         'userID' => $_REQUEST['userID'] ?: $userID,
-        'comment' => $_REQUEST['comment'] ?: $comment
+        'comment' => $_REQUEST['comment'] ?: $comment,
+        'comment_parent' => $_REQUEST['comment_parent']
     );
-
-    $data['comment'] = $user['comment'];
-
-
 
     if($user['userID'] && $user['comment']){
 
