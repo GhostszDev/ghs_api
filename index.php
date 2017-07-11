@@ -6,7 +6,7 @@
  * @package           Ghs_api
  *
  * @wordpress-plugin
- * Plugin Name:       GHS API v1
+ * Plugin Name:       GHS API
  * Plugin URI:        http://Ghostszmusic.com
  * Description:       This is the main api for Ghostszmusic website and mobile app.
  * Version:           1.0
@@ -461,7 +461,9 @@ function ghs_post(){
     $args = [
         'numberposts' => $_REQUEST['post_num'],
         'category' => $_REQUEST['cat'],
-        'exclude' => $_REQUEST['ex']
+        'exclude' => $_REQUEST['ex'],
+        'offset' => $_REQUEST['offset'],
+        'post_status' => 'publish'
     ];
 
     $post = get_posts($args);
@@ -929,4 +931,4 @@ function post_comment(){
 
 }
 
-function edit_user(){}
+//function edit_user(){}

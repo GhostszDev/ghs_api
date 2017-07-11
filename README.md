@@ -138,6 +138,7 @@ Returns         | This returns success or failure                    |
 All updates and changes are mentioned below
 
 * Added user editing ability ()
+* Added offset to post feed for pagination (07/11/17)
 * Added user profile commenting (06/02/17)
 * Updated login function to include highscore data when sent the gameID (06/01/17)
 * Now users will get feed for comments left on post with post link (05/25/17)
