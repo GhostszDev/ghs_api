@@ -153,10 +153,10 @@ function ghs_webservice_route(){
         )
     );
 
-    register_rest_route('ghs_api/v1', '/edit_user/',
+    register_rest_route('ghs_api/v1', '/uploadMedia/',
         array(
             'methods' => 'POST',
-            'callback' => 'edit_user'
+            'callback' => 'uploadMedia'
         )
     );
 
@@ -931,4 +931,26 @@ function post_comment(){
 
 }
 
-//function edit_user(){}
+function uploadMedia(){
+
+    global $wpdb;
+    $data['success'] = false;
+
+    $media = array(
+        "userID" => $_REQUEST['userID'],
+        "content" => $_REQUEST['content'],
+        "type" => $_REQUEST['type'],
+        "mediaType" => $_REQUEST['mediaType']
+    );
+
+    $update = $wpdb->insert('media', $media);
+
+    if($update){
+        $data['success'] = true;
+    } else {
+        $data['success'] = false;
+        $data['error_message'] = "There was a problem uploading your media content";
+    }
+
+    return $data;
+}

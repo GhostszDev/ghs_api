@@ -20,6 +20,7 @@ Social                              | POST  | /ghs_api/v1/social/       | Sign i
 [User Feed](#user-feed)             | POST  | /ghs_api/userFeed/        | This gets the users feed for their profile          | YES
 [User Update](#user-feed-update)    | POST  | /ghs_api/userUpdate/      | This updates the users feed with updates and more   | YES
 [Edit User](#edit-user)             | POST  | /ghs_api/edit_user/       | This updates the users information                  | NO
+[Upload Media](#upload-media)       | POST  | /ghs_api/updateImg/       | This updates the users media file                   | NO
 
 # Functions
 
@@ -134,10 +135,20 @@ Params          | Desc                                               |
 userID          | This is the userID for current user                |
 Returns         | This returns success or failure                    |
 
+### Upload Media
+Params          | Desc                                               |
+----------------|----------------------------------------------------|
+userID          | This is the userID for current user                |
+blob            | This is the new media for current user             |
+type            | This is the type of media being uploaded           |
+Returns         | This returns success or failure                    |
+
 # Update Log
 All updates and changes are mentioned below
 
+* social sign in ()
 * Added user editing ability ()
+* Upload user profile img ()
 * Added offset to post feed for pagination (07/11/17)
 * Added user profile commenting (06/02/17)
 * Updated login function to include highscore data when sent the gameID (06/01/17)
