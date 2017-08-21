@@ -21,6 +21,7 @@ Social                              | POST  | /ghs_api/v1/social/       | Sign i
 [User Update](#user-feed-update)    | POST  | /ghs_api/userUpdate/      | This updates the users feed with updates and more   | YES
 [Edit User](#edit-user)             | POST  | /ghs_api/edit_user/       | This updates the users information                  | NO
 [Upload Media](#upload-media)       | POST  | /ghs_api/updateImg/       | This updates the users media file                   | NO
+[Emails](#emails)                   | POST  | /ghs_api/emails/          | This sends a email to the users                     | NO
 
 # Functions
 
@@ -141,6 +142,11 @@ Params          | Desc                                               |
 userID          | This is the userID for current user                |
 blob            | This is the new media for current user             |
 type            | This is the type of media being uploaded           |
+Returns         | This returns success or failure                    |
+
+### Emails
+Params          | Desc                                               |
+----------------|----------------------------------------------------|
 Returns         | This returns success or failure                    |
 
 # Update Log

@@ -160,6 +160,13 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/sendingEmail/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'sendingEmail'
+        )
+    );
+
 }
 
 function logout(){
@@ -953,4 +960,41 @@ function uploadMedia(){
     }
 
     return $data;
+}
+
+function sendingEmail($mailingList = false, $mailTo = "", $sender = "", $sub = "", $msg = "", $name = ""){
+
+    $data['success'] = false;
+
+    $mailingList = $_REQUEST['mailingList'];
+    $mailTo = $_REQUEST['mailTo'];
+    $sender = $_REQUEST['sender'];
+    $sub = $_REQUEST['sub'];
+    $msg = $_REQUEST['msg'];
+    $name = $_REQUEST['name'];
+
+    $data['info'] = array($mailTo, $mailingList, $sender, $sub, $msg, $name);
+
+    if($mailingList == true) {
+        if ($sender == "") {
+            $sender = "mail@ghostszmusic.com";
+        }
+
+        if ($name == "") {
+            $name = "GhostszMusic Mail";
+        }
+    }
+
+    $header = "From: " . $name . "<" . $sender . ">\r\n";
+    $header .= "Reply-To: contact@ghostszmusic.com\r\n";
+    $header .= "Content-type: text/html\r\n";
+
+    if($msg != "" && $mailTo != ""){
+       $data['mail'] =  mail($mailTo, $sub, $msg, $header);
+    } else {
+        $data['error_message'] = "There's no message and/or email address!";
+    }
+
+    return $data;
+
 }
