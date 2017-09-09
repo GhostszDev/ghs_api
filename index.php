@@ -167,6 +167,80 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/social/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'social'
+        )
+    );
+
+}
+
+function getuserdata($ID){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $user_ID = $_REQUEST['user_ID'] ?: $ID;
+
+    $user = get_userdata($user_ID);
+//    $data['test'] = $user;
+
+    if($user){
+
+        $data['success'] = true;
+
+        $data['user']['ID'] = $user->data->ID;
+        $data['user']['name'] = ucwords($user->data->firstName . ' ' . $user->data->lastName);
+        $data['user']['email'] = $user->data->user_email;
+        $data['user']['gender'] = $user->data->gender;
+        $data['user']['userName'] = ucwords($user->data->user_login);
+        $data['user']['birthday'] = $user->data->birthday;
+        $data['user']['role'] = $user->roles;
+        $data['user']['user_icon'] = get_avatar_url($user->data->ID, array(
+            'size'=> 40
+        ));
+        $data['user']['user_icon_big'] = get_avatar_url($user->data->ID, array(
+            'size'=> 72
+        ));
+        $data['user']['user_icon_100'] = get_avatar_url($user->data->ID, array(
+            'size'=> 100
+        ));
+
+        $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
+
+        if($img){
+
+            $data['user']['backgroundImg'] = $img;
+
+        } else {
+
+            $data['user']['backgroundImg'] = "/wp-content/uploads/2017/05/profile-bg.png";
+
+        }
+
+    } else {
+
+        $data['error_message'] = "You're not currently signed in!";
+    }
+
+    return $data;
+
+}
+
+function generateRandomPassword() {
+    //Initialize the random password
+    $password = '';
+
+    //Initialize a random desired length
+    $desired_length = rand(8, 12);
+
+    for($length = 0; $length < $desired_length; $length++) {
+        //Append a random ASCII character (including symbols)
+        $password .= chr(rand(32, 126));
+    }
+
+    return $password;
 }
 
 function logout(){
@@ -231,31 +305,99 @@ function mailing(){
 
 }
 
-function signup(){
+function login($user = []){
+
+    global $wpdb;
+
+    $cred = [
+        'user_login' => $_REQUEST['user_login'] ?: $user['user_name'],
+        'user_password' => $_REQUEST['user_password'] ?: $user['password'],
+        'remember' => $_REQUEST['remember'] ?: true
+    ];
+
+    $data['user'] = $cred;
+
+    $gameID = $_REQUEST['gameID'];
+
+    $user = wp_signon( $cred, true );
+
+    if ( is_wp_error($user) ){
+        $data['error_message'] = "Please check your username/and or password.";
+        $data['success'] = false;
+    } else {
+        $data['success'] = true;
+        wp_set_auth_cookie($user->data->ID);
+        do_action('wp_login', $user->data);
+        $userInfo = $user->data;
+
+        $data['ID'] = $userInfo->ID;
+        $data['firstName'] = $userInfo->firstName;
+        $data['lastName'] = $userInfo->lastName;
+        $data['userName'] = $userInfo->user_login;
+        $data['email'] = $userInfo->user_email;
+        $data['password'] = $cred['user_password'];
+        $data['facebook'] = $userInfo->facebook;
+        $data['google'] = $userInfo->google;
+
+        if($gameID){
+
+            switch($gameID) {
+                case '7bd41fb04c8fac3edd23b749405d052a':
+                    $score = $wpdb->get_results("SELECT `ID`, `score` FROM `wdef_db` WHERE `ID` = '" . $userInfo->ID . "'");
+                    break;
+            }
+
+            if($score){
+                $data['highscore'] = $score[0]->score;
+            }
+
+        }
+    }
+
+    return $data;
+
+}
+
+function signup($user = []){
 
     $data['success'] = false;
     global $wpdb;
 
     $new_user = [
-        'user_login' => $_REQUEST['user_name'],
-        'firstName' => $_REQUEST['first_name'],
-        'lastName' => $_REQUEST['last_name'],
-        'user_email'  => $_REQUEST['email'],
-        'user_pass'  => $_REQUEST['password'],
-        'gender' => $_REQUEST['gender'],
-        'birthday' => $_REQUEST['birthday']
+        'user_login' => $_REQUEST['user_name'] ?: $user['user_name'],
+        'firstName' => $_REQUEST['first_name'] ?: $user['first_name'],
+        'lastName' => $_REQUEST['last_name'] ?: $user['last_name'],
+        'user_email'  => $_REQUEST['email'] ?: $user['email'],
+        'user_pass'  => $_REQUEST['password'] ?: $user['user_pass'],
+        'gender' => $_REQUEST['gender'] ?: $user['gender'],
+        'birthday' => $_REQUEST['birthday'] ?: $user['birthday'],
+        'facebook' => $_REQUEST['FBID'] ?: $user['FBID'],
+        'google' => $_REQUEST['GID'] ?: $user['GID'],
+        'mailing' => $_REQUEST['mailing'] ?: $user['mailing']
     ];
 
 //    $data['test'] = $new_user;
+    $insertData = [
+        'firstName' => $new_user['firstName'],
+        'lastName' => $new_user['lastName'],
+        'gender' => $new_user['gender'],
+        'birthday' => $new_user['birthday'],
+        'facebook' => $new_user['facebook'],
+        'google' => $new_user['google']
+    ];
 
     if ( username_exists($new_user['user_login']) || email_exists($new_user['user_email']) ) {
         $data['error_message'] = "Username and/or Email is unavailable";
     }else{
 
         if($new_user['user_pass']){
-            $created = $wpdb->insert('wp_users', $new_user);
+            $created = wp_insert_user($new_user);
+            $data['user']['ID'] = $created;
+            $insert = $wpdb->update('wp_users', $insertData, array('ID'=>$created));
+//            $data['insert'] = $insert;
+//            $data['insertData'] = $insertData;
 
-            if($created){
+            if($created && $insert){
                 $data['success'] = true;
                 $data['message'] = "User was created!";
 
@@ -284,62 +426,61 @@ function signup(){
 
 function social(){
 
+    global $wpdb;
+    $data['success'] = false;
+
     $social = [
-        'id' => $_REQUEST[""],
-        'name' => $_REQUEST[""]
+        'user_login' => $_REQUEST['user_name'],
+        'firstName' => $_REQUEST['first_name'],
+        'lastName' => $_REQUEST['last_name'],
+        'user_email'  => $_REQUEST['email'],
+        'user_pass'  => $_REQUEST['password'],
+        'gender' => $_REQUEST['gender'],
+        'birthday' => $_REQUEST['birthday'],
+        'FBID' => $_REQUEST['FBID'],
+        'GID' => $_REQUEST['GID'],
+        'mailing' => true
     ];
 
-    $data = $social;
-    return $data;
+//    $data['social'] = $social;
 
-}
+    if($social['FBID'] != null || $social['FBID'] != "") {
+        $check = $wpdb->get_results('SELECT `id`, `user_login`, `user_pass`, `facebook`, `google` FROM `wp_users` WHERE ' . ' `facebook` = ' . '"' . $social['FBID'] . '"' . " LIMIT 1");
+    }
 
-function getuserdata(){
+//    $data['last'] = $wpdb->last_query;
+//    $data['error'] = $wpdb->show_errors;
+//    $data['result'] = $wpdb->last_result;
 
-    $data['success'] = false;
-    global $wpdb;
+    if($check){
 
-    $user_ID = $_REQUEST['user_ID'];
+        foreach ($check as $c){
 
-    $user = get_userdata($user_ID);
-//    $data['test'] = $user;
-
-    if($user){
-
-        $data['success'] = true;
-
-        $data['user']['ID'] = $user->data->ID;
-        $data['user']['name'] = ucwords($user->data->firstName . ' ' . $user->data->lastName);
-        $data['user']['email'] = $user->data->user_email;
-        $data['user']['gender'] = $user->data->gender;
-        $data['user']['userName'] = ucwords($user->data->user_login);
-        $data['user']['birthday'] = $user->data->birthday;
-        $data['user']['role'] = $user->roles;
-        $data['user']['user_icon'] = get_avatar_url($user->data->ID, array(
-            'size'=> 40
-        ));
-        $data['user']['user_icon_big'] = get_avatar_url($user->data->ID, array(
-            'size'=> 72
-        ));
-        $data['user']['user_icon_100'] = get_avatar_url($user->data->ID, array(
-            'size'=> 100
-        ));
-
-        $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
-
-        if($img){
-
-            $data['user']['backgroundImg'] = $img;
-
-        } else {
-
-            $data['user']['backgroundImg'] = "/wp-content/uploads/2017/05/profile-bg.png";
+            $u['user_name'] = $c->user_login;
+            $u['password'] = $c->user_pass;
+            $u['id'] = $c->id;
 
         }
 
+//        $data['user'] = $u;
+
+        wp_set_current_user( $u['id'], $u['user_name'] );
+        wp_set_auth_cookie( $u['id'] );
+        do_action( 'wp_login', $u);
+        $data['success'] = true;
+
     } else {
 
-        $data['error_message'] = "You're not currently signed in!";
+        $social['user_pass'] = wp_generate_password( $length=12, $include_standard_special_chars=false );
+        $signup = signup($social);
+
+//        $data['signup'] = $signup;
+        $user = getuserdata($signup['user']['ID']);
+
+        wp_set_current_user( $user['user']['ID'], $user['user']['userName'] );
+        wp_set_auth_cookie( $user['user']['ID'] );
+        do_action( 'wp_login', $user['user']);
+
     }
 
     return $data;
@@ -405,57 +546,6 @@ function sendgameData(){
 
     }
 
-
-    return $data;
-
-}
-
-function login(){
-
-    global $wpdb;
-
-    $cred = [
-        'user_login' => $_REQUEST['user_login'],
-        'user_password' => $_REQUEST['user_password'],
-        'remember' => $_REQUEST['remember']
-    ];
-
-    $gameID = $_REQUEST['gameID'];
-
-    $user = wp_signon( $cred, true );
-
-    if ( is_wp_error($user) ){
-        $data['error_message'] = "Please check your username/and or password.";
-        $data['success'] = false;
-    } else {
-        $data['success'] = true;
-        wp_set_auth_cookie($user->data->ID);
-        do_action('wp_login', $user->data);
-        $userInfo = $user->data;
-
-        $data['ID'] = $userInfo->ID;
-        $data['firstName'] = $userInfo->firstName;
-        $data['lastName'] = $userInfo->lastName;
-        $data['userName'] = $userInfo->user_login;
-        $data['email'] = $userInfo->user_email;
-        $data['password'] = $cred['user_password'];
-        $data['facebook'] = $userInfo->facebook;
-        $data['google'] = $userInfo->google;
-
-        if($gameID){
-
-            switch($gameID) {
-                case '7bd41fb04c8fac3edd23b749405d052a':
-                    $score = $wpdb->get_results("SELECT `ID`, `score` FROM `wdef_db` WHERE `ID` = '" . $userInfo->ID . "'");
-                    break;
-            }
-
-            if($score){
-                $data['highscore'] = $score[0]->score;
-            }
-
-        }
-    }
 
     return $data;
 

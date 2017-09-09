@@ -8,7 +8,7 @@ Logout                              | GET   | /ghs_api/v1/logout/       | This a
 [SignUp](#signup)                   | POST  | /ghs_api/v1/signup/       | This allows user to sign up to site remotely        | YES
 [Get User Data](#get-user-data)     | POST  | /ghs_api/v1/getuserdata/  | This get the users info from the database           | YES
 [Send Game Data](#send-game-data)   | POST  | /ghs_api/v1/sendgameData/ | This get the current user data                      | YES
-Social                              | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | NO
+[Social](#social)                   | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | NO
 [Mail List](#mail-list)             | POST  | /ghs_api/v1/mailing/      | Signs email of user to mailing list database        | YES
 [Post Comments](#post-comments)     | POST  | /ghs_api/v1/post_comment/ | This allow user to post comments to any post        | YES
 [Get Comments](#get-comments)       | POST  | /ghs_api/v1/getComments/  | This get teh comments for what post is currently up | YES
@@ -149,12 +149,26 @@ Params          | Desc                                               |
 ----------------|----------------------------------------------------|
 Returns         | This returns success or failure                    |
 
+### Social
+Params       | Desc                                                       |
+-------------|------------------------------------------------------------|
+user_login   | This is the new user's username                            |
+firstName    | This is the first name for the user                        |
+lastName     | This is the last name for the user                         |
+user_email   | This is the email for the user                             |
+user_pass    | This is is the password for the user                       |
+gender       | The gender of the user                                     |
+birthday     | The birthday connected to the user                         |
+Facebook ID  | This is the facebook user ID                               |
+Google   ID  | This is the Google user ID                                 |
+Returns      | Returns success or failure for the creation of the account |
+
 # Update Log
 All updates and changes are mentioned below
 
-* social sign in ()
 * Added user editing ability ()
 * Upload user profile img ()
+* social sign in (09/09/17)
 * Added offset to post feed for pagination (07/11/17)
 * Added user profile commenting (06/02/17)
 * Updated login function to include highscore data when sent the gameID (06/01/17)
