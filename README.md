@@ -8,7 +8,7 @@ Logout                              | GET   | /ghs_api/v1/logout/       | This a
 [SignUp](#signup)                   | POST  | /ghs_api/v1/signup/       | This allows user to sign up to site remotely        | YES
 [Get User Data](#get-user-data)     | POST  | /ghs_api/v1/getuserdata/  | This get the users info from the database           | YES
 [Send Game Data](#send-game-data)   | POST  | /ghs_api/v1/sendgameData/ | This get the current user data                      | YES
-[Social](#social)                   | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | NO
+[Social](#social)                   | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | YES
 [Mail List](#mail-list)             | POST  | /ghs_api/v1/mailing/      | Signs email of user to mailing list database        | YES
 [Post Comments](#post-comments)     | POST  | /ghs_api/v1/post_comment/ | This allow user to post comments to any post        | YES
 [Get Comments](#get-comments)       | POST  | /ghs_api/v1/getComments/  | This get teh comments for what post is currently up | YES
