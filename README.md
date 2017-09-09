@@ -11,7 +11,7 @@ Logout                              | GET   | /ghs_api/v1/logout/       | This a
 [Social](#social)                   | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | YES
 [Mail List](#mail-list)             | POST  | /ghs_api/v1/mailing/      | Signs email of user to mailing list database        | YES
 [Post Comments](#post-comments)     | POST  | /ghs_api/v1/post_comment/ | This allow user to post comments to any post        | YES
-[Get Comments](#get-comments)       | POST  | /ghs_api/v1/getComments/  | This get teh comments for what post is currently up | YES
+[Get Comments](#get-comments)       | POST  | /ghs_api/v1/getComments/  | This get the comments for what post is currently up | YES
 [Single Post](#single-post)         | POST  | /ghs_api/singlePost/      | This gets a single post                             | YES
 [Add Friend](#add-friend)           | POST  | /ghs_api/addfriend/       | This add a user to a another users friends list     | YES
 [Friends List](#friends-list)       | POST  | /ghs_api/friendsList/     | This gets a users friends list                      | YES
