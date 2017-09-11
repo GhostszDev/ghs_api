@@ -444,13 +444,20 @@ function social(){
 
 //    $data['social'] = $social;
 
-    if($social['FBID'] != null || $social['FBID'] != "") {
-        $check = $wpdb->get_results('SELECT `id`, `user_login`, `user_pass`, `facebook`, `google` FROM `wp_users` WHERE ' . ' `facebook` = ' . '"' . $social['FBID'] . '"' . " LIMIT 1");
+
+    if($social['FBID'] != "" || $social['FBID'] != null){
+
+        $check = $wpdb->get_results('SELECT `id`, `user_login`, `user_pass`, `facebook` FROM `wp_users` WHERE ' . ' `facebook` =  "' . $social['FBID'] . '" OR `facebook` != ""' . " LIMIT 1");
+
+    } else if($social['GID'] != "" || $social['GID'] != null) {
+
+        $check = $wpdb->get_results('SELECT `id`, `user_login`, `user_pass`, `google` FROM `wp_users` WHERE ' . ' `google` =  "' . $social['GID'] . '" OR `google` != ""' . " LIMIT 1");
+
     }
 
 //    $data['last'] = $wpdb->last_query;
 //    $data['error'] = $wpdb->show_errors;
-//    $data['result'] = $wpdb->last_result;
+//    $data['result'] = $check;
 
     if($check){
 
@@ -480,6 +487,7 @@ function social(){
         wp_set_current_user( $user['user']['ID'], $user['user']['userName'] );
         wp_set_auth_cookie( $user['user']['ID'] );
         do_action( 'wp_login', $user['user']);
+        $data['success'] = true;
 
     }
 

@@ -168,6 +168,7 @@ All updates and changes are mentioned below
 
 * Added user editing ability ()
 * Upload user profile img ()
+* Google sign added to login (09/11/17)
 * social sign in (09/09/17)
 * Added offset to post feed for pagination (07/11/17)
 * Added user profile commenting (06/02/17)
