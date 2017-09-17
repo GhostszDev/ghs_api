@@ -228,21 +228,6 @@ function getuserdata($ID){
 
 }
 
-function generateRandomPassword() {
-    //Initialize the random password
-    $password = '';
-
-    //Initialize a random desired length
-    $desired_length = rand(8, 12);
-
-    for($length = 0; $length < $desired_length; $length++) {
-        //Append a random ASCII character (including symbols)
-        $password .= chr(rand(32, 126));
-    }
-
-    return $password;
-}
-
 function logout(){
 
     $data['success'] = false;
@@ -265,7 +250,7 @@ function insert_mailing_user($mail){
     global $wpdb;
 
     if($mail['first_name'] && $mail['last_name'] && $mail['email']){
-        $check = $wpdb->get_results( "SELECT email FROM wp_mailing WHERE email LIKE '". $mail['email'] ."'");
+        $check = $wpdb->get_results( "SELECT email FROM wp_mailing WHERE email LIKE '". $mail['email'] ."' LIMIT 1");
 
         if($check < 1) {
             $mailing = $wpdb->insert('wp_mailing', $mail);
@@ -288,12 +273,12 @@ function insert_mailing_user($mail){
 
 }
 
-function mailing(){
+function mailing($firstName, $lastName, $email){
 
     $mailing_user = [
-        'first_name'  => $_REQUEST['first_name'],
-        'last_name'  => $_REQUEST["last_name"],
-        'email'  => $_REQUEST["email"]
+        'first_name'  => $_REQUEST['first_name'] ?: $firstName,
+        'last_name'  => $_REQUEST["last_name"] ?: $lastName,
+        'email'  => $_REQUEST["email"] ?: $email
     ];
 
 //    $data['cool'] = $mailing_user;
@@ -1060,38 +1045,13 @@ function uploadMedia(){
     return $data;
 }
 
-function sendingEmail($mailingList = false, $mailTo = "", $sender = "", $sub = "", $msg = "", $name = ""){
+function sendingEmail(){
 
     $data['success'] = false;
 
-    $mailingList = $_REQUEST['mailingList'];
-    $mailTo = $_REQUEST['mailTo'];
-    $sender = $_REQUEST['sender'];
-    $sub = $_REQUEST['sub'];
-    $msg = $_REQUEST['msg'];
-    $name = $_REQUEST['name'];
-
-    $data['info'] = array($mailTo, $mailingList, $sender, $sub, $msg, $name);
-
-    if($mailingList == true) {
-        if ($sender == "") {
-            $sender = "mail@ghostszmusic.com";
-        }
-
-        if ($name == "") {
-            $name = "GhostszMusic Mail";
-        }
-    }
-
-    $header = "From: " . $name . "<" . $sender . ">\r\n";
-    $header .= "Reply-To: contact@ghostszmusic.com\r\n";
-    $header .= "Content-type: text/html\r\n";
-
-    if($msg != "" && $mailTo != ""){
-       $data['mail'] =  mail($mailTo, $sub, $msg, $header);
-    } else {
-        $data['error_message'] = "There's no message and/or email address!";
-    }
+    $mail = [
+        '' => $_REQUEST['']
+    ];
 
     return $data;
 
