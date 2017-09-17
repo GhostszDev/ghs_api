@@ -14,9 +14,6 @@
  * Author URI:        http://Ghostszmusic.com
  */
 
-//adding actions
-add_action('rest_api_init', 'ghs_webservice_route');
-
 //functions
 function ghs_webservice_route(){
 
@@ -171,6 +168,13 @@ function ghs_webservice_route(){
         array(
             'methods' => 'POST',
             'callback' => 'social'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/getRecentComments/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'getRecentComments'
         )
     );
 
@@ -1056,3 +1060,57 @@ function sendingEmail(){
     return $data;
 
 }
+
+function getRecentComments(){
+
+    global $wpdb;
+    $data['success'] = false;
+    $blogtime = new DateTime(current_time( 'mysql' ));
+
+    $getComments = $wpdb->get_results('SELECT `comment_post_ID`, `user_id`, `comment_content`, `comment_date` FROM `wp_comments` WHERE `user_id` != 0 ORDER BY `comment_date` DESC LIMIT 10');
+
+    if(!$getComments){
+
+        $data['error_message'] = "No Comments";
+
+    }else{
+
+        $data['success'] = true;
+
+        $key = 0;
+        foreach ($getComments as $g){
+
+            $user = get_userdata($g->user_id);
+            $pastDate = new DateTime($g->comment_date);
+
+            $data['recentComments'][$key]['userComment'] = substr($g->comment_content, 0, 100);
+             $diff = date_diff($blogtime, $pastDate);
+
+            $data['recentComments'][$key]['commentTime'] = $diff->format('%a') . " Days Ago";
+            $post = get_post($g->comment_post_ID);
+
+            if($post){
+                $data['recentComments'][$key]['postName'] = substr($post->post_title, 0, 100);
+                $data['recentComments'][$key]['postLink'] = get_permalink($g->comment_post_ID);
+            }
+
+            if($user) {
+
+                $data['recentComments'][$key]['userName'] = ucwords($user->data->user_login);
+
+                $data['recentComments'][$key]['user_icon'] = get_avatar_url($user->data->ID, array(
+                    'size' => 53
+                ));
+            }
+
+            $key++;
+        }
+
+    }
+
+    return $data;
+
+}
+
+//adding actions
+add_action('rest_api_init', 'ghs_webservice_route');

@@ -1,27 +1,28 @@
 # [<img src="http://ghostszmusic.com/wp-content/uploads/2017/01/small-logo.png" style="width:35px !important;"> GHS API for wordpress](https://ghostszmusic.com)
 This API is for connecting mobile and desktop to become one unified platform.
 
-Function                            | Method| Url                       | Usage                                               | Completion |
-------------------------------------|-------|---------------------------|-----------------------------------------------------|------------|
-[Login](#login)                     | POST  | /ghs_api/v1/login/        | This allows users to login remotely to site         | YES
-Logout                              | GET   | /ghs_api/v1/logout/       | This allows user to sign out from site remotely     | NO
-[SignUp](#signup)                   | POST  | /ghs_api/v1/signup/       | This allows user to sign up to site remotely        | YES
-[Get User Data](#get-user-data)     | POST  | /ghs_api/v1/getuserdata/  | This get the users info from the database           | YES
-[Send Game Data](#send-game-data)   | POST  | /ghs_api/v1/sendgameData/ | This get the current user data                      | YES
-[Social](#social)                   | POST  | /ghs_api/v1/social/       | Sign in the user using his social key               | YES
-[Mail List](#mail-list)             | POST  | /ghs_api/v1/mailing/      | Signs email of user to mailing list database        | YES
-[Post Comments](#post-comments)     | POST  | /ghs_api/v1/post_comment/ | This allow user to post comments to any post        | YES
-[Get Comments](#get-comments)       | POST  | /ghs_api/v1/getComments/  | This get the comments for what post is currently up | YES
-[Single Post](#single-post)         | POST  | /ghs_api/singlePost/      | This gets a single post                             | YES
-[Add Friend](#add-friend)           | POST  | /ghs_api/addfriend/       | This add a user to a another users friends list     | YES
-[Friends List](#friends-list)       | POST  | /ghs_api/friendsList/     | This gets a users friends list                      | YES
-[Grab Games List](#grab-games-list) | GET   | /ghs_api/grabGameList/    | This grabs the games list                           | YES
-[Contact Us](#contact-us)           | POST  | /ghs_api/contactUs/       | Allows the user to send a message to company        | YES
-[User Feed](#user-feed)             | POST  | /ghs_api/userFeed/        | This gets the users feed for their profile          | YES
-[User Update](#user-feed-update)    | POST  | /ghs_api/userUpdate/      | This updates the users feed with updates and more   | YES
-[Edit User](#edit-user)             | POST  | /ghs_api/edit_user/       | This updates the users information                  | NO
-[Upload Media](#upload-media)       | POST  | /ghs_api/updateImg/       | This updates the users media file                   | NO
-[Emails](#emails)                   | POST  | /ghs_api/emails/          | This sends a email to the users                     | NO
+Function                            | Method| Url                         | Usage                                               | Completion |
+------------------------------------|-------|-----------------------------|-----------------------------------------------------|------------|
+[Login](#login)                     | POST  | /ghs_api/v1/login/          | This allows users to login remotely to site         | YES
+Logout                              | GET   | /ghs_api/v1/logout/         | This allows user to sign out from site remotely     | NO
+[SignUp](#signup)                   | POST  | /ghs_api/v1/signup/         | This allows user to sign up to site remotely        | YES
+[Get User Data](#get-user-data)     | POST  | /ghs_api/v1/getuserdata/    | This get the users info from the database           | YES
+[Send Game Data](#send-game-data)   | POST  | /ghs_api/v1/sendgameData/   | This get the current user data                      | YES
+[Social](#social)                   | POST  | /ghs_api/v1/social/         | Sign in the user using his social key               | YES
+[Mail List](#mail-list)             | POST  | /ghs_api/v1/mailing/        | Signs email of user to mailing list database        | YES
+[Post Comments](#post-comments)     | POST  | /ghs_api/v1/post_comment/   | This allow user to post comments to any post        | YES
+[Get Comments](#get-comments)       | POST  | /ghs_api/v1/getComments/    | This get the comments for what post is currently up | YES
+[Single Post](#single-post)         | POST  | /ghs_api/singlePost/        | This gets a single post                             | YES
+[Add Friend](#add-friend)           | POST  | /ghs_api/addfriend/         | This add a user to a another users friends list     | YES
+[Friends List](#friends-list)       | POST  | /ghs_api/friendsList/       | This gets a users friends list                      | YES
+[Grab Games List](#grab-games-list) | GET   | /ghs_api/grabGameList/      | This grabs the games list                           | YES
+[Contact Us](#contact-us)           | POST  | /ghs_api/contactUs/         | Allows the user to send a message to company        | YES
+[User Feed](#user-feed)             | POST  | /ghs_api/userFeed/          | This gets the users feed for their profile          | YES
+[User Update](#user-feed-update)    | POST  | /ghs_api/userUpdate/        | This updates the users feed with updates and more   | YES
+[Edit User](#edit-user)             | POST  | /ghs_api/edit_user/         | This updates the users information                  | NO
+[Upload Media](#upload-media)       | POST  | /ghs_api/updateImg/         | This updates the users media file                   | NO
+[Emails](#emails)                   | POST  | /ghs_api/emails/            | This sends a email to the users                     | NO
+[Recent Comments](#recent-comments) | GET   | /ghs_api/getRecentComments/ | This get the most recent comments                   | YES
 
 # Functions
 
@@ -163,11 +164,17 @@ Facebook ID  | This is the facebook user ID                               |
 Google   ID  | This is the Google user ID                                 |
 Returns      | Returns success or failure for the creation of the account |
 
+### Recent Comments
+Params          | Desc                                               |
+----------------|----------------------------------------------------|
+Returns         | This returns success or failure and comments       |
+
 # Update Log
 All updates and changes are mentioned below
 
 * Added user editing ability ()
 * Upload user profile img ()
+* Recent Comments (09/17/17)
 * Google sign added to login (09/11/17)
 * social sign in (09/09/17)
 * Added offset to post feed for pagination (07/11/17)
