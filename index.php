@@ -14,6 +14,9 @@
  * Author URI:        http://Ghostszmusic.com
  */
 
+//adding actions
+add_action('rest_api_init', 'ghs_webservice_route');
+
 //functions
 function ghs_webservice_route(){
 
@@ -175,6 +178,13 @@ function ghs_webservice_route(){
         array(
             'methods' => 'GET',
             'callback' => 'getRecentComments'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/countUserCJ/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'countUserCJ'
         )
     );
 
@@ -1114,3 +1124,36 @@ function getRecentComments(){
 
 //adding actions
 add_action('rest_api_init', 'ghs_webservice_route');
+
+function countUserCJ(){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $query = $wpdb->get_results('SELECT COUNT(*) as users FROM `wp_users`');
+//    $check = $wpdb->last_query;
+
+    if($query) {
+        $data['success'] = true;
+//        $data['usersCount'] = $query[0]->users;
+        $send = [
+            'userCount' => $query[0]->users
+        ];
+
+        $insert = $wpdb->insert('ana_userCount',  $send);
+
+        if($insert){
+
+            $data['success'] = true;
+
+        } else {
+
+            $data['success'] = false;
+            $data['error_message'] = "userCount failed to insert in table";
+        }
+    }
+
+    return $data;
+
+
+}
