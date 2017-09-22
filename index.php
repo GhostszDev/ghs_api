@@ -1262,17 +1262,38 @@ function ghsfriendcheck(){
 function ytAnaData(){
 
     $data['success'] = false;
-    $ytAnaBase = 'https://www.googleapis.com/youtube/analytics/v1';
+    $month_start = strtotime('first day of this month', time());
+    $month_end = strtotime('last day of this month', time());
+    $id = "channel==UCVmQ1mT50ksSLUK1KEFJ67w";
+    $url = 'https://www.googleapis.com/youtube/analytics/v1/reports?ids=' . $id
+        . '&end-date=' . date('Y-m-d',$month_end) . '&start-date=' . date('Y-m-d', $month_start)
+        . '&metrics=estimatedRevenue';
 
     $ch = curl_init();
-
-    curl_setopt($ch, CURLOPT_URL, $ytAnaBase . '/reports');
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $output = curl_exec($ch);
+    $result = curl_exec($ch);
     curl_close($ch);
 
-    $data['object'] = $output;
+    $data['object'] = $result;
 
     return $data;
 
 }
+
+//function YT_VidStatus($video){
+//
+//    $id = $video;
+//    $key = '';
+//    $url = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=".$key."&part=status";
+//    $api = file_get_contents($url);
+//    $result = json_decode($api);
+//
+//
+//    if(!$result->items){
+//        return false;
+//    }else {
+//        return $result->items[0]->status->privacyStatus;
+//    }
+//
+//}
