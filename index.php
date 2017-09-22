@@ -202,6 +202,13 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/ytAnaData/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'ytAnaData'
+        )
+    );
+
 }
 
 function getuserdata($ID){
@@ -1205,7 +1212,7 @@ function addMeToFriend($userID){
 
         $check = $wpdb->get_results('SELECT * FROM `friends` WHERE `userID` = 1 AND `friendID` = ' . $insertData['friendID'] . ' LIMIT 1');
 
-        $data['check'] = $check;
+//        $data['check'] = $check;
 
         if(!$check) {
             $insert = $wpdb->insert('friends', $insertData);
@@ -1250,4 +1257,22 @@ function ghsfriendcheck(){
     }
 
     return $data;
+}
+
+function ytAnaData(){
+
+    $data['success'] = false;
+    $ytAnaBase = 'https://www.googleapis.com/youtube/analytics/v1';
+
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $ytAnaBase . '/reports');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $output = curl_exec($ch);
+    curl_close($ch);
+
+    $data['object'] = $output;
+
+    return $data;
+
 }

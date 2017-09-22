@@ -190,21 +190,3 @@ All updates and changes are mentioned below
 * Added functionality for getting a single post by using post id. (04/28/17)
 * Updated README.md (Now you can see all changes with update log. Also add a function section to keep track of all process.) 
 * sendgameData now fully functional (This allows the user to send and/or update their scores in the database.)
-
-
-public function YT_VidStatus($video){
-
-        $id = $video;
-        $key = 'AIzaSyDXa1TnJty5QBbBXUDluG21nPnBSsQdbJI';
-        $url = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=".$key."&part=status";
-        $api = file_get_contents($url);
-        $result = json_decode($api);
-
-
-        if(!$result->items){
-            return false;
-        }else {
-            return $result->items[0]->status->privacyStatus;
-        }
-//        return $result->items[0]->status->privacyStatus;
-    }
