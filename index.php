@@ -188,6 +188,20 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/userCount/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'userCount'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/ghsfriendcheck/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'ghsfriendcheck'
+        )
+    );
+
 }
 
 function getuserdata($ID){
@@ -393,6 +407,7 @@ function signup($user = []){
             $created = wp_insert_user($new_user);
             $data['user']['ID'] = $created;
             $insert = $wpdb->update('wp_users', $insertData, array('ID'=>$created));
+            addMeToFriend($created);
 //            $data['insert'] = $insert;
 //            $data['insertData'] = $insertData;
 
@@ -1122,9 +1137,6 @@ function getRecentComments(){
 
 }
 
-//adding actions
-add_action('rest_api_init', 'ghs_webservice_route');
-
 function countUserCJ(){
 
     $data['success'] = false;
@@ -1156,4 +1168,86 @@ function countUserCJ(){
     return $data;
 
 
+}
+
+function userCount(){
+
+    $data['success'] = false;
+    global $wpdb;
+
+     $query = $wpdb->get_results('SELECT * FROM `ana_userCount` ORDER BY `ID` DESC');
+
+     if($query){
+
+         $data['success'] = true;
+         $data['result'] = $query;
+
+     }
+
+    return $data;
+
+}
+
+function addMeToFriend($userID){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $friendID = $userID;
+
+    $insertData = [
+        'userID' => 1,
+        'friendID' =>  $friendID,
+        'approved' => 1
+    ];
+
+    if($userID){
+
+        $check = $wpdb->get_results('SELECT * FROM `friends` WHERE `userID` = 1 AND `friendID` = ' . $insertData['friendID'] . ' LIMIT 1');
+
+        $data['check'] = $check;
+
+        if(!$check) {
+            $insert = $wpdb->insert('friends', $insertData);
+
+            if ($insert) {
+
+                $data['success'] = true;
+
+            }
+        } else {
+
+            $data['success'] = false;
+        }
+
+    }
+
+    return $data;
+
+}
+
+function ghsfriendcheck(){
+
+    $data['success'] = false;
+    global $wpdb;
+
+    $users = $wpdb->get_results('SELECT `ID` FROM `wp_users` WHERE `ID` != 1');
+
+
+    if($users) {
+
+        $data['success'] = true;
+
+        $key = 0;
+        foreach ($users as $u) {
+
+            $data['users'][$key]['ID'] = $u->ID;
+            $data['users'][$key]['added'] = addMeToFriend($data['users'][$key]['ID']);
+
+            $key++;
+
+        }
+    }
+
+    return $data;
 }
