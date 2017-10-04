@@ -232,15 +232,9 @@ function getuserdata($ID){
         $data['user']['userName'] = ucwords($user->data->user_login);
         $data['user']['birthday'] = $user->data->birthday;
         $data['user']['role'] = $user->roles;
-        $data['user']['user_icon'] = get_avatar_url($user->data->ID, array(
-            'size'=> 40
-        ));
-        $data['user']['user_icon_big'] = get_avatar_url($user->data->ID, array(
-            'size'=> 72
-        ));
-        $data['user']['user_icon_100'] = get_avatar_url($user->data->ID, array(
-            'size'=> 100
-        ));
+        $data['user']['user_icon'] = get_user_img($user->data->ID, 40);
+        $data['user']['user_icon_big'] = get_user_img($user->data->ID, 72);
+        $data['user']['user_icon_100'] = get_user_img($user->data->ID, 100);
 
         $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
 
@@ -723,9 +717,7 @@ function getComments(){
             $data['comment'][$key]['comment'] = $c->comment_content;
             $data['comment'][$key]['comment_parent'] = $c->comment_parent;
             $data['comment'][$key]['role'] = $role->roles[0];
-            $data['comment'][$key]['user_img'] = get_avatar_url($c->comment_ID, array(
-                'size'=> 40
-            ));
+            $data['comment'][$key]['user_img'] = get_user_img($c->user_id, 40);
 
             $key++;
 
@@ -744,7 +736,7 @@ function friendsList(){
     $data['success'] = false;
     global $wpdb;
 
-    $friends = $wpdb->get_results( "SELECT friendID, approved FROM friends WHERE userID LIKE '". $userID ."'");
+    $friends = $wpdb->get_results( "SELECT friendID, userID, approved FROM friends WHERE userID = '". $userID ."' OR friendID = '" . $userID . "'");
 
     if($friends){
 
@@ -753,27 +745,53 @@ function friendsList(){
         $key = 0;
         foreach ($friends as $f){
 
-            $gt = $wpdb->get_results( "SELECT ID, firstName, lastName, user_login, user_status FROM wp_users WHERE ID LIKE '". $f->friendID ."'");
+            if($f->friendID != $userID) {
+                $gt = $wpdb->get_results("SELECT ID, firstName, lastName, user_login, user_status FROM wp_users WHERE ID LIKE '" . $f->friendID . "'");
 
-            foreach ($gt as $r){
+                foreach ($gt as $r) {
 
-                $role = get_userdata($r->ID);
+                    $role = get_userdata($r->ID);
 
-                $data['friend'][$key]['ID'] = $r->ID;
-                $data['friend'][$key]['firstName'] = $r->firstName;
-                $data['friend'][$key]['lastName'] = $r->lastName;
-                $data['friend'][$key]['userName'] = $r->user_login;
-                $data['friend'][$key]['role'] = $role->roles[0];
+                    $data['friend'][$key]['ID'] = $r->ID;
+                    $data['friend'][$key]['firstName'] = $r->firstName;
+                    $data['friend'][$key]['lastName'] = $r->lastName;
+                    $data['friend'][$key]['userName'] = $r->user_login;
+                    $data['friend'][$key]['role'] = $role->roles[0];
 
-                if($r->user_status == 0){
-                    $data['friend'][$key]['status'] = "offline";
-                } else {
-                    $data['friend'][$key]['status'] = "online";
+                    if ($r->user_status == 0) {
+                        $data['friend'][$key]['status'] = "offline";
+                    } else {
+                        $data['friend'][$key]['status'] = "online";
+                    }
+
+                    $data['friend'][$key]['user_icon'] = get_user_img($r->ID, 40);
+                    $data['friend'][$key]['link'] = "user-profile/" . $r->user_login;
+
                 }
+            } else {
 
-                $data['friend'][$key]['user_icon'] = get_avatar_url($r->ID, array(
-                    'size'=> 40
-                ));
+                $gt = $wpdb->get_results("SELECT ID, firstName, lastName, user_login, user_status FROM wp_users WHERE ID LIKE '" . $f->userID . "'");
+
+                foreach ($gt as $r) {
+
+                    $role = get_userdata($r->ID);
+
+                    $data['friend'][$key]['ID'] = $r->ID;
+                    $data['friend'][$key]['firstName'] = $r->firstName;
+                    $data['friend'][$key]['lastName'] = $r->lastName;
+                    $data['friend'][$key]['userName'] = $r->user_login;
+                    $data['friend'][$key]['role'] = $role->roles[0];
+
+                    if ($r->user_status == 0) {
+                        $data['friend'][$key]['status'] = "offline";
+                    } else {
+                        $data['friend'][$key]['status'] = "online";
+                    }
+
+                    $data['friend'][$key]['user_icon'] = get_user_img($r->ID, 40);
+                    $data['friend'][$key]['link'] = "user-profile/" . $r->user_login;
+
+                }
 
             }
 
@@ -864,52 +882,73 @@ function userFeed(){
     $data['success'] = false;
     global $wpdb;
 
-    $check = $wpdb->get_results( "SELECT `userID`, `comment`, `date` FROM `userFeed` ORDER BY `date` DESC");
+    $userName = $_REQUEST['userName'];
 
-    $key = 0;
+    $check = $wpdb->get_results('SELECT `ID`, `user_login` FROM `wp_users` WHERE `user_login` = "' . $userName . '" LIMIT 1');
 
-    if($check) {
+    if($check){
 
         $data['success'] = true;
 
-        foreach ($check as $c) {
+        $getFeed = $wpdb->get_results('SELECT `userID`, `comment`, `date` FROM `userfeed` WHERE `userID` = "' . $check[0]->ID . '"');
 
-            $data['feed'][$key]['comment'] = $c->comment;
+        $userData = getuserdata($check[0]->ID);
+        $data['user'] = $userData['user'];
 
-            $time = strtotime($c->date);
-            $date = date("m/d/y", $time);
+        if($getFeed){
 
-            $data['feed'][$key]['date'] = $date;
+            $data['success'] = true;
 
-            $user = $wpdb->get_results("SELECT ID, firstName, lastName, user_login FROM wp_users WHERE ID LIKE '" . $c->userID . "'");
+            $user_meta = get_userdata($check[0]->ID);
 
-            foreach ($user as $r) {
+            $key = 0;
+            foreach ($getFeed as $f){
 
-                $role = get_userdata($r->ID);
-
-                $data['feed'][$key]['ID'] = $r->ID;
-                $data['feed'][$key]['firstName'] = ucwords($r->firstName);
-                $data['feed'][$key]['lastName'] = ucwords($r->lastName);
-                $data['feed'][$key]['userName'] = ucwords($r->user_login);
-                $data['feed'][$key]['role'] = $role->roles[0];
-
-                $data['feed'][$key]['user_icon'] = get_avatar_url($r->ID, array(
-                    'size' => 40
-                ));
+                $data['feed'][$key]['ID'] = $f->userID;
+                $data['feed'][$key]['comment'] = $f->comment;
+                $data['feed'][$key]['date'] = $f->date;
+                $data['feed'][$key]['firstName'] = $user_meta->data->firstName;
+                $data['feed'][$key]['lastName'] = $user_meta->data->lastName;
+                $data['feed'][$key]['role'] = $user_meta->roles[0];
+                $data['feed'][$key]['userName'] = ucwords($check[0]->user_login);
+                $data['feed'][$key]['user_icon'] = get_user_img($f->userID, 40);
+                $key++;
 
             }
 
-            $key++;
+        } else {
+
+            $data['success'] = false;
+            $data['error_message'] = "No messages in feed!";
 
         }
-    } else {
-
-        $data['success'] = false;
-        $data['error_message'] = "No comments...";
 
     }
 
     return $data;
+
+}
+
+function get_user_img($userID, $imgSize){
+
+    $data['img'] = '';
+    global $wpdb;
+
+    $check = $wpdb->get_results('SELECT `ID`, `userImg` FROM `userstats` WHERE `ID` = "' . $userID . '" LIMIT 1');
+
+    if($check){
+
+        $data['img'] = $check[0]->userImg;
+
+    } else {
+
+        $data['img'] = get_avatar_url($check[0]->ID, array(
+            'size'=> $imgSize
+        ));;
+
+    }
+
+    return $data['img'];
 
 }
 
@@ -1261,6 +1300,11 @@ function ghsfriendcheck(){
 
 function ytAnaData(){
 
+    require_once __DIR__ . '/libs/google-api/vendor/autoload.php';
+
+//    $client = new Google_Client();
+//    $client->setAuthConfig('/path/to/client_credentials.json');
+
     $data['success'] = false;
     $month_start = strtotime('first day of this month', time());
     $month_end = strtotime('last day of this month', time());
@@ -1280,20 +1324,3 @@ function ytAnaData(){
     return $data;
 
 }
-
-//function YT_VidStatus($video){
-//
-//    $id = $video;
-//    $key = '';
-//    $url = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=".$key."&part=status";
-//    $api = file_get_contents($url);
-//    $result = json_decode($api);
-//
-//
-//    if(!$result->items){
-//        return false;
-//    }else {
-//        return $result->items[0]->status->privacyStatus;
-//    }
-//
-//}
