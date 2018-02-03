@@ -14,6 +14,14 @@
  * Author URI:        http://Ghostszmusic.com
  */
 
+// const vars
+const CLIENT_ID     = 'wbUdss6pwRQIrIDcrRptfFED3XkhA5Ut5TnQfIat';
+const CLIENT_SECRET = 'iphWXjamrgNjtBETgcHHxnoOwYHRVl7TXkAxlhAS';
+
+const REDIRECT_URI           = 'http://localhost/test';
+const AUTHORIZATION_ENDPOINT = 'http://localhost/oauth/authorize';
+const TOKEN_ENDPOINT         = 'http://localhost/oauth/token';
+
 //adding actions
 add_action('rest_api_init', 'ghs_webservice_route');
 
@@ -209,6 +217,20 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/ghs_oauth/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'ghs_oauth'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/getTokenUserData/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'getTokenUserData'
+        )
+    );
+
 }
 
 function getuserdata($ID){
@@ -217,6 +239,7 @@ function getuserdata($ID){
     global $wpdb;
 
     $user_ID = $_REQUEST['user_ID'] ?: $ID;
+    $blog_id = get_current_blog_id();
 
     $user = get_userdata($user_ID);
 //    $data['test'] = $user;
@@ -235,6 +258,7 @@ function getuserdata($ID){
         $data['user']['user_icon'] = get_user_img($user->data->ID, 40);
         $data['user']['user_icon_big'] = get_user_img($user->data->ID, 72);
         $data['user']['user_icon_100'] = get_user_img($user->data->ID, 100);
+        $data['user']['blog_id'] = $blog_id;
 
         $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
 
@@ -330,6 +354,7 @@ function login($user = []){
     ];
 
     $data['user'] = $cred;
+    $auth = "";
 
     $gameID = $_REQUEST['gameID'];
 
@@ -342,8 +367,10 @@ function login($user = []){
         $data['success'] = true;
         wp_set_auth_cookie($user->data->ID);
         do_action('wp_login', $user->data);
+        $auth = ghs_oauth();
         $userInfo = $user->data;
 
+        $data['token'] = $auth->result->access_token;
         $data['ID'] = $userInfo->ID;
         $data['firstName'] = $userInfo->firstName;
         $data['lastName'] = $userInfo->lastName;
@@ -1320,6 +1347,85 @@ function ytAnaData(){
     curl_close($ch);
 
     $data['object'] = $result;
+
+    return $data;
+
+}
+
+function ghs_oauth(){
+
+    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\Client.php');
+    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\GrantType\IGrantType.php');
+    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\GrantType\AuthorizationCode.php');
+
+    $data['success'] = false;
+
+    $client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
+    if (!isset($_GET['code']))
+    {
+        $auth_url = $client->getAuthenticationUrl(AUTHORIZATION_ENDPOINT, REDIRECT_URI);
+        header('Location: ' . $auth_url);
+        die('Redirect');
+    }
+    else {
+        $params = array('code' => $_GET['code'], 'redirect_uri' => REDIRECT_URI);
+        $response = $client->getAccessToken(TOKEN_ENDPOINT, 'authorization_code', $params);
+        echo "<pre>";
+        print_r(json_encode($response));
+    }
+
+    return $data;
+
+}
+
+function ghs_token($code){
+
+    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\Client.php');
+    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\GrantType\IGrantType.php');
+    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\GrantType\AuthorizationCode.php');
+
+    $data['success'] = false;
+
+    $token_args = [
+        'method' => 'POST',
+        'timeout' => 45,
+        'redirection' => 5,
+        'httpversion' => '1.0',
+        'blocking' => true,
+        'headers' => array(
+            'content-type' => 'application/x-www-form-urlencoded',
+            'Authorization' => 'Bearer {base64 encoded ' . CLIENT_ID . ':' . CLIENT_SECRET . '}'
+        ),
+        'body' => array(
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+            'client_id' => CLIENT_ID,
+            'client_secret' => CLIENT_SECRET,
+            'redirect_uri' => REDIRECT_URI
+        ),
+        'cookies' => array()
+    ];
+
+    $token = wp_remote_request(TOKEN_ENDPOINT, $token_args);
+    $tokenData = wp_remote_retrieve_body($token);
+
+    $data['token'] = $tokenData;
+
+    return $data;
+}
+
+function getTokenUserData(){
+
+    $data['success'] = false;
+
+    $token = $_REQUEST['token'];
+
+    $service_url = site_url('/oauth/me?access_token=' . $token . '&grant_type=authorization_code&client_id=' . CLIENT_ID);
+
+    $response = file_get_contents($service_url);
+
+    $data['user_data'] = json_decode($response);
+    $data['url'] = $service_url;
 
     return $data;
 
