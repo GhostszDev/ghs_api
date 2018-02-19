@@ -22,6 +22,9 @@ const REDIRECT_URI           = 'http://localhost/test';
 const AUTHORIZATION_ENDPOINT = 'http://localhost/oauth/authorize';
 const TOKEN_ENDPOINT         = 'http://localhost/oauth/token';
 
+const G_KEY = 'AIzaSyBPRQK0VSndolG08-S76iz18viv2tAXF6I';
+const YT_ID = 'UCVmQ1mT50ksSLUK1KEFJ67w';
+
 //adding actions
 add_action('rest_api_init', 'ghs_webservice_route');
 
@@ -228,6 +231,20 @@ function ghs_webservice_route(){
         array(
             'methods' => 'POST',
             'callback' => 'getTokenUserData'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/getSocialStats/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'getSocialStats'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/socialStats/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'socialStats'
         )
     );
 
@@ -1426,6 +1443,68 @@ function getTokenUserData(){
 
     $data['user_data'] = json_decode($response);
     $data['url'] = $service_url;
+
+    return $data;
+
+}
+
+function getSocialStats(){
+
+    global $wpdb;
+    $data['success'] = false;
+
+    $getStats = $wpdb->get_results("SELECT * FROM `socialStats` WHERE `type` LIKE 'youtube' ORDER BY timeStamp ASC LIMIT 1");
+
+    if($getStats){
+
+        $data['social'] = $getStats;
+        $data['success'] = true;
+
+    }
+
+    return $data;
+}
+
+function socialStats(){
+    global $wpdb;
+
+    $data['success'] = false;
+
+    $g_color = 'd34836';
+    $yt_color = 'ff0000';
+    $fb_color = '3b5998';
+    $twit_color = '00aced';
+    $tumblr_color = '32506d';
+
+    $yt_resp = wp_remote_get( 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YT_ID . '&key=' . G_KEY );
+
+    if ( is_array( $yt_resp ) ) {
+        $body = json_decode($yt_resp['body']); // use the content
+
+        $yt_stats = $body->items[0]->statistics;
+
+        if($yt_stats != null) {
+            $yt_args = [
+                'type' => 'youtube',
+                'amount' => $yt_stats->subscriberCount,
+                'label' => 'Subscribers',
+                'color' => $yt_color
+            ];
+
+            $yt_entered = $wpdb->insert('socialStats', $yt_args);
+
+            if($yt_entered){
+                $data['success'] = true;
+                $data['message'] = 'Youtube Stats has been added';
+                $data['mailing'] = $yt_entered;
+            } else {
+                $data['message'] = "Youtube Stats hasn't been added";
+            }
+
+        }
+    }
+
+
 
     return $data;
 
