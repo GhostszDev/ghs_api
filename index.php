@@ -14,16 +14,8 @@
  * Author URI:        http://Ghostszmusic.com
  */
 
-// const vars
-const CLIENT_ID     = 'wbUdss6pwRQIrIDcrRptfFED3XkhA5Ut5TnQfIat';
-const CLIENT_SECRET = 'iphWXjamrgNjtBETgcHHxnoOwYHRVl7TXkAxlhAS';
-
-const REDIRECT_URI           = 'http://localhost/test';
-const AUTHORIZATION_ENDPOINT = 'http://localhost/oauth/authorize';
-const TOKEN_ENDPOINT         = 'http://localhost/oauth/token';
-
-const G_KEY = 'AIzaSyBPRQK0VSndolG08-S76iz18viv2tAXF6I';
-const YT_ID = 'UCVmQ1mT50ksSLUK1KEFJ67w';
+//includes
+require_once(dirname( __FILE__ ) . '/libs/ghs_includes.php');
 
 //adding actions
 add_action('rest_api_init', 'ghs_webservice_route');
@@ -1475,6 +1467,78 @@ function socialStats(){
     $fb_color = '3b5998';
     $twit_color = '00aced';
     $tumblr_color = '32506d';
+    $sndc_color = 'ff7700';
+
+    $fb_getToken = wp_remote_get( 'https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='.FB_ID.'&client_secret='.FB_SC);
+    $fb_token = json_decode($fb_getToken['body']);
+
+    if(is_array($fb_getToken)) {
+
+        $fb_resp = wp_remote_get('https://graph.facebook.com/'. FB_Version . '/1608008972746432/?fields=fan_count&access_token=' . $fb_token->access_token);
+
+        if (is_array($fb_resp)) {
+            $body = json_decode($fb_resp['body']); // use the content
+
+            $fb_stats = $body->fan_count;
+
+            if ($fb_stats != null) {
+                $fb_args = [
+                    'type' => 'facebook',
+                    'amount' => $fb_stats,
+                    'label' => 'Fans',
+                    'color' => $fb_color
+                ];
+
+                $fb_entered = $wpdb->insert('socialStats', $fb_args);
+
+                if ($fb_entered) {
+                    $data['success'] = true;
+                    $data['fb_message'] = 'FaceBook Stats has been added';
+                } else {
+                    $data['fb_message'] = "FaceBook Stats hasn't been added";
+                }
+
+            }
+        }else {
+            $data['fb_message'] = "FaceBook Token not found - " . json_decode($fb_resp['body']);
+        }
+    } else {
+        $data['fb_message'] = "FaceBook Token not found - " . json_decode($fb_getToken['body']);
+    }
+
+//    $twit_resp = wp_remote_get( 'https://api.twitter.com/1.1/users/lookup.json?screen_name=ghostszmusic',
+//        array(
+//            'headers' => array(
+//                'Authorization' => 'Basic ' . twit_token
+//            )
+//        ));
+//
+//    if ( is_array( $twit_resp ) ) {
+//        $body = json_decode($twit_resp['body']); // use the content
+//
+//        $twit_stats = $body;
+//
+//        if($twit_stats != null) {
+//            $twit_args = [
+//                'type' => 'twitter',
+//                'amount' => $twit_stats,
+//                'label' => 'Fans',
+//                'color' => $twit_color
+//            ];
+//
+//            $data['twitter'] = $twit_args;
+//
+////            $twit_entered = $wpdb->insert('socialStats', $twit_args);
+////
+////            if($twit_entered){
+////                $data['success'] = true;
+////                $data['twit_message'] = 'Twitter Stats has been added';
+////            } else {
+////                $data['twit_message'] = "Twitter Stats hasn't been added";
+////            }
+//
+//        }
+//    }
 
     $yt_resp = wp_remote_get( 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YT_ID . '&key=' . G_KEY );
 
@@ -1495,10 +1559,9 @@ function socialStats(){
 
             if($yt_entered){
                 $data['success'] = true;
-                $data['message'] = 'Youtube Stats has been added';
-                $data['mailing'] = $yt_entered;
+                $data['yt_message'] = 'Youtube Stats has been added';
             } else {
-                $data['message'] = "Youtube Stats hasn't been added";
+                $data['yt_message'] = "Youtube Stats hasn't been added";
             }
 
         }
