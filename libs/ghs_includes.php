@@ -1,8 +1,8 @@
 <?php
 
 // const vars
-const CLIENT_ID     = 'wbUdss6pwRQIrIDcrRptfFED3XkhA5Ut5TnQfIat';
-const CLIENT_SECRET = 'iphWXjamrgNjtBETgcHHxnoOwYHRVl7TXkAxlhAS';
+const CLIENT_ID     = 'ccfHO00GfOew8TWAWYLXLH4Gmojj6rEq5d8wXJmp';
+const CLIENT_SECRET = 'xA55vWTye85aSVbsy1zZuZH1BOUi6Nr7F13StXEu';
 
 const REDIRECT_URI           = 'https://ghostszmusic.com/appData';
 const AUTHORIZATION_ENDPOINT = 'https://ghostszmusic.com/oauth/authorize';
