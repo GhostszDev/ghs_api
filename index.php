@@ -16,6 +16,9 @@
 
 //includes
 require_once(dirname( __FILE__ ) . '/libs/ghs_includes.php');
+require_once(dirname( __FILE__ ) . '/libs/PHP-OAuth2-master/src/OAuth2/Client.php');
+require_once(dirname( __FILE__ ) . '/libs/PHP-OAuth2-master/src/OAuth2/GrantType/IGrantType.php');
+require_once(dirname( __FILE__ ) . '/libs/PHP-OAuth2-master/src/OAuth2/GrantType/AuthorizationCode.php');
 
 //adding actions
 add_action('rest_api_init', 'ghs_webservice_route');
@@ -235,8 +238,29 @@ function ghs_webservice_route(){
 
     register_rest_route('ghs_api/v1', '/socialStats/',
         array(
-            'methods' => 'GET',
+            'methods' => 'POST',
             'callback' => 'socialStats'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/authInstag/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'authInstag'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/updateImg/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'updateImg'
+        )
+    );
+
+    register_rest_route('ghs_api/v1', '/updataUser/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'updataUser'
         )
     );
 
@@ -258,15 +282,30 @@ function getuserdata($ID){
         $data['success'] = true;
 
         $data['user']['ID'] = $user->data->ID;
-        $data['user']['name'] = ucwords($user->data->firstName . ' ' . $user->data->lastName);
+        $data['user']['first_name'] = ucwords($user->data->firstName);
+        $data['user']['last_name'] = ucwords($user->data->lastName);
+
+        if(!empty($user->data->firstName) && !empty($user->data->lastName)){
+            $data['user']['name'] = ucwords($user->data->firstName . ' ' . $user->data->lastName);
+        } else {
+            $data['user']['name'] = '';
+        }
+
         $data['user']['email'] = $user->data->user_email;
         $data['user']['gender'] = $user->data->gender;
         $data['user']['userName'] = ucwords($user->data->user_login);
         $data['user']['birthday'] = $user->data->birthday;
-        $data['user']['role'] = $user->roles;
-        $data['user']['user_icon'] = get_user_img($user->data->ID, 40);
-        $data['user']['user_icon_big'] = get_user_img($user->data->ID, 72);
-        $data['user']['user_icon_100'] = get_user_img($user->data->ID, 100);
+        list($year, $month, $day) = split('[/.-]', $user->data->birthday);
+        $data['user']['month'] = $month;
+        $data['user']['date'] = $day;
+        $data['user']['year'] = $year;
+        $userIcon[] = get_user_img($user->data->ID, 40);
+        $userIconBig[] = get_user_img($user->data->ID, 72);
+        $userIcon100[] = get_user_img($user->data->ID, 100);
+        $data['user']['useBlob'] = $userIcon[0]['yes'];
+        $data['user']['user_icon'] = $userIcon[0]['img'];
+        $data['user']['user_icon_big'] = $userIconBig[0]['img'];
+        $data['user']['user_icon_100'] = $userIcon100[0]['img'];
         $data['user']['blog_id'] = $blog_id;
 
         $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
@@ -967,24 +1006,23 @@ function userFeed(){
 
 function get_user_img($userID, $imgSize){
 
-    $data['img'] = '';
     global $wpdb;
+    $data['img'] = '';
+    $data['yes'] = false;
 
     $check = $wpdb->get_results('SELECT `ID`, `userImg` FROM `userstats` WHERE `ID` = "' . $userID . '" LIMIT 1');
 
-    if($check){
-
+    if($check[0]->userImg){
         $data['img'] = $check[0]->userImg;
-
+        $data['yes'] = true;
     } else {
-
-        $data['img'] = get_avatar_url($check[0]->ID, array(
+        $data['img'] = get_avatar_url($userID, array(
             'size'=> $imgSize
-        ));;
-
+        ));
+        $data['yes'] = false;
     }
 
-    return $data['img'];
+    return $data;
 
 }
 
@@ -1257,7 +1295,7 @@ function userCount(){
     $data['success'] = false;
     global $wpdb;
 
-     $query = $wpdb->get_results('SELECT * FROM `ana_userCount` ORDER BY `ID` DESC');
+     $query = $wpdb->get_results('SELECT * FROM `ana_userCount` ORDER BY `ID` DESC LIMIT 1');
 
      if($query){
 
@@ -1363,10 +1401,6 @@ function ytAnaData(){
 
 function ghs_oauth(){
 
-    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\Client.php');
-    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\GrantType\IGrantType.php');
-    require(dirname( __FILE__ ) . '\libs\PHP-OAuth2-master\src\OAuth2\GrantType\AuthorizationCode.php');
-
     $data['success'] = false;
 
     $client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
@@ -1444,12 +1478,51 @@ function getSocialStats(){
 
     global $wpdb;
     $data['success'] = false;
+    $data['social'] = [
+        'rate' => 0
+    ];
 
-    $getStats = $wpdb->get_results("SELECT * FROM `socialStats` WHERE `type` LIKE 'youtube' ORDER BY timeStamp ASC LIMIT 1");
+    $getStats = $wpdb->get_results("SELECT * FROM `socialStats` WHERE `type` LIKE 'facebook' OR `type` LIKE 'youtube' ORDER BY timeStamp DESC LIMIT 4");
 
     if($getStats){
-
         $data['social'] = $getStats;
+        $baseYT = 0;
+        $baseFB = 0;
+        $symbolYT = '';
+        $symbolFB = '';
+
+        $array = array_chunk($getStats, 2);
+
+        if($array[0][0]->type == 'youtube' && $array[1][0]->type == 'youtube') {
+            $baseYT = $array[0][0]->amount - $array[1][0]->amount;
+        } else {
+            $baseYT = 0;
+        }
+
+        if($array[0][1]->type == 'facebook' && $array[1][1]->type == 'facebook'){
+            $baseFB = $array[0][1]->amount - $array[1][1]->amount;
+        } else {
+            $baseFB = 0;
+        }
+
+        if($baseYT <= 0){
+            $symbolYT = 'desc';
+        } else {
+            $symbolYT = 'asc';
+        }
+
+        if($baseFB <= 0){
+            $symbolFB = 'desc';
+        } else {
+            $symbolFB = 'asc';
+        }
+
+        $array[0][0]->rate = $baseYT;
+        $array[0][0]->upOrDown = $symbolYT;
+        $array[0][1]->rate = $baseFB;
+        $array[0][1]->upOrDown = $symbolFB;
+
+        $data['social'] = array_reverse($array[0]);
         $data['success'] = true;
 
     }
@@ -1457,8 +1530,9 @@ function getSocialStats(){
     return $data;
 }
 
-function socialStats(){
+function socialStats($instaCode){
     global $wpdb;
+    $insta_code = $_REQUEST['instaCode'] ?: $instaCode;
 
     $data['success'] = false;
 
@@ -1469,6 +1543,7 @@ function socialStats(){
     $tumblr_color = '32506d';
     $sndc_color = 'ff7700';
 
+//    Facebook Stats
     $fb_getToken = wp_remote_get( 'https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='.FB_ID.'&client_secret='.FB_SC);
     $fb_token = json_decode($fb_getToken['body']);
 
@@ -1489,14 +1564,14 @@ function socialStats(){
                     'color' => $fb_color
                 ];
 
-                $fb_entered = $wpdb->insert('socialStats', $fb_args);
-
-                if ($fb_entered) {
-                    $data['success'] = true;
-                    $data['fb_message'] = 'FaceBook Stats has been added';
-                } else {
-                    $data['fb_message'] = "FaceBook Stats hasn't been added";
-                }
+//                $fb_entered = $wpdb->insert('socialStats', $fb_args);
+//
+//                if ($fb_entered) {
+//                    $data['success'] = true;
+//                    $data['fb_message'] = 'FaceBook Stats has been added';
+//                } else {
+//                    $data['fb_message'] = "FaceBook Stats hasn't been added";
+//                }
 
             }
         }else {
@@ -1506,6 +1581,7 @@ function socialStats(){
         $data['fb_message'] = "FaceBook Token not found - " . json_decode($fb_getToken['body']);
     }
 
+//    Twitter Stats
 //    $twit_resp = wp_remote_get( 'https://api.twitter.com/1.1/users/lookup.json?screen_name=ghostszmusic',
 //        array(
 //            'headers' => array(
@@ -1540,6 +1616,11 @@ function socialStats(){
 //        }
 //    }
 
+//    Instagram Stats
+    $data['insta_token'] = $insta_code;
+
+
+//    Youtube stats
     $yt_resp = wp_remote_get( 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YT_ID . '&key=' . G_KEY );
 
     if ( is_array( $yt_resp ) ) {
@@ -1555,20 +1636,108 @@ function socialStats(){
                 'color' => $yt_color
             ];
 
-            $yt_entered = $wpdb->insert('socialStats', $yt_args);
-
-            if($yt_entered){
-                $data['success'] = true;
-                $data['yt_message'] = 'Youtube Stats has been added';
-            } else {
-                $data['yt_message'] = "Youtube Stats hasn't been added";
-            }
+//            $yt_entered = $wpdb->insert('socialStats', $yt_args);
+//
+//            if($yt_entered){
+//                $data['success'] = true;
+//                $data['yt_message'] = 'Youtube Stats has been added';
+//            } else {
+//                $data['yt_message'] = "Youtube Stats hasn't been added";
+//            }
 
         }
     }
 
 
+    return $data;
+
+}
+
+function authInstag(){
+
+    $client = new OAuth2\Client(CLIENT_ID, CLIENT_SECRET);
+    if (!isset($_GET['code'])) {
+        $auth_url = $client->getAuthenticationUrl("https://instagram.com/oauth/authorize/?client_id=8031be64fc90427e97bc83939cd37057&redirect_uri=".REDIRECT_URI."&response_type=token");
+        header('Location: ' . $auth_url);
+        die('Redirect');
+    }
+
+}
+
+function updateImg(){
+
+    global $wpdb;
+    $data['success'] = false;
+
+    $img = $_REQUEST['img'];
+    $user_ID = $_REQUEST['user_ID'];
+
+    if(isset($img) && isset($user_ID)){
+        $check = $wpdb->get_results('SELECT `ID`, `userImg` FROM `userstats` WHERE `ID` = '. $user_ID);
+
+        if(empty($check)) {
+            $insertData = [
+                'ID' => $user_ID,
+                'userImg' => $img
+            ];
+
+            $insert = $wpdb->insert('userstats', $insertData);
+
+            if($insert){
+                $data['success'] = true;
+            } else {
+                $data['success'] = false;
+                $data['error_message'] = "Error Code: 829";
+            }
+
+        } else {
+
+            $updateData = [
+                'userImg' => $img
+            ];
+
+            $update = $wpdb->update('userstats', $updateData, array('ID'=>$user_ID));
+
+            if($update){
+                $data['success'] = true;
+            } else {
+                $data['success'] = false;
+                $data['error_message'] = "Error Code: 830";
+            }
+
+        }
+    }
 
     return $data;
 
+}
+
+function updataUser($user){
+    global $wpdb;
+    $data['success'] = false;
+
+    $userID = $_REQUEST['userID'] ?: $user['user_ID'];
+
+    $user_data = [
+        'firstName' => $_REQUEST['first_name'] ?: $user['first_name'],
+        'lastName' => $_REQUEST['last_name'] ?: $user['last_name'],
+        'user_email'  => $_REQUEST['email'] ?: $user['email'],
+        'gender' => $_REQUEST['gender'] ?: $user['gender'],
+        'birthday' => $_REQUEST['birthday'] ?: $user['birthday'],
+        'facebook' => $_REQUEST['FBID'] ?: $user['FBID'],
+        'google' => $_REQUEST['GID'] ?: $user['GID']
+    ];
+
+    $data['user'] = $user_data['userID'];
+
+    $update = $wpdb->update('wp_users', $user_data, array('ID'=>$userID));
+
+    if($update){
+        $data['success'] = true;
+    } else {
+        $data['success'] = false;
+        $data['error_message'] = "Error Code: 49251";
+    }
+
+    return $data;
 }
