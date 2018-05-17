@@ -295,7 +295,7 @@ function getuserdata($ID){
         $data['user']['gender'] = $user->data->gender;
         $data['user']['userName'] = ucwords($user->data->user_login);
         $data['user']['birthday'] = $user->data->birthday;
-        list($year, $month, $day) = split('[/.-]', $user->data->birthday);
+        list($year, $month, $day) = explode('[/.-]', $user->data->birthday);
         $data['user']['month'] = $month;
         $data['user']['date'] = $day;
         $data['user']['year'] = $year;
@@ -616,7 +616,7 @@ function sendgameData(){
                     array(
                         'score' => $score,
                         'userID' => $userID
-                        )
+                    )
                 );
                 $data['message'] = "Score was added!";
             }
@@ -696,8 +696,8 @@ function carouselItems(){
 
     $post1 = get_posts(
         array(
-        'numberposts' => 1,
-        'category' => 94
+            'numberposts' => 1,
+            'category' => 94
         )
     );
     $post2 = get_posts(
@@ -1069,9 +1069,9 @@ function badgeUnlock(){
     global $wpdb;
 
     $unlock = array(
-      'userID' => $_REQUEST['userID'],
-      'badgeID' => $_REQUEST['badgeID'],
-      'gameID' => $_REQUEST['gameID']
+        'userID' => $_REQUEST['userID'],
+        'badgeID' => $_REQUEST['badgeID'],
+        'gameID' => $_REQUEST['gameID']
     );
 
     $userName = get_userdata($unlock['userID']);
@@ -1107,7 +1107,7 @@ function badgeUnlock(){
                     $data['error_message'] = "No such badge and/or game exist!";
 
                 }
-            break;
+                break;
         }
 
     }
@@ -1229,7 +1229,7 @@ function getRecentComments(){
             $pastDate = new DateTime($g->comment_date);
 
             $data['recentComments'][$key]['userComment'] = substr($g->comment_content, 0, 100);
-             $diff = date_diff($blogtime, $pastDate);
+            $diff = date_diff($blogtime, $pastDate);
 
             $data['recentComments'][$key]['commentTime'] = $diff->format('%a') . " Days Ago";
             $post = get_post($g->comment_post_ID);
@@ -1295,14 +1295,14 @@ function userCount(){
     $data['success'] = false;
     global $wpdb;
 
-     $query = $wpdb->get_results('SELECT * FROM `ana_userCount` ORDER BY `ID` DESC LIMIT 1');
+    $query = $wpdb->get_results('SELECT * FROM `ana_userCount` ORDER BY `ID` DESC LIMIT 1');
 
-     if($query){
+    if($query){
 
-         $data['success'] = true;
-         $data['result'] = $query;
+        $data['success'] = true;
+        $data['result'] = $query;
 
-     }
+    }
 
     return $data;
 
@@ -1728,7 +1728,7 @@ function updataUser($user){
         'google' => $_REQUEST['GID'] ?: $user['GID']
     ];
 
-    $data['user'] = $user_data['userID'];
+    $data['user'] = $userID;
 
     $update = $wpdb->update('wp_users', $user_data, array('ID'=>$userID));
 

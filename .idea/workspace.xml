@@ -19,45 +19,12 @@
       <file leaf-file-name="index.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="407">
-              <caret line="300" column="38" lean-forward="true" selection-start-line="300" selection-start-column="38" selection-end-line="300" selection-end-column="38" />
+            <state relative-caret-position="264">
+              <caret line="1723" column="62" lean-forward="true" selection-start-line="1723" selection-start-column="62" selection-end-line="1723" selection-end-column="62" />
               <folding>
-                <element signature="n#logout#0;n#!!top" />
-                <element signature="n#insert_mailing_user#0;n#!!top" />
-                <element signature="n#mailing#0;n#!!top" />
-                <element signature="n#login#0;n#!!top" />
-                <element signature="n#signup#0;n#!!top" />
-                <element signature="n#social#0;n#!!top" />
-                <element signature="n#sendgameData#0;n#!!top" />
-                <element signature="n#ghs_post#0;n#!!top" />
-                <element signature="n#carouselItems#0;n#!!top" />
-                <element signature="n#singlePost#0;n#!!top" />
-                <element signature="n#getComments#0;n#!!top" />
-                <element signature="n#friendsList#0;n#!!top" />
-                <element signature="n#addFriend#0;n#!!top" />
-                <element signature="n#grabGameList#0;n#!!top" />
-                <element signature="n#contactUs#0;n#!!top" />
-                <element signature="n#userFeed#0;n#!!top" />
-                <element signature="n#get_user_img#0;n#!!top" />
-                <element signature="n#userUpdate#0;n#!!top" />
-                <element signature="n#badgeUnlock#0;n#!!top" />
-                <element signature="n#post_comment#0;n#!!top" />
-                <element signature="n#uploadMedia#0;n#!!top" />
-                <element signature="n#sendingEmail#0;n#!!top" />
-                <element signature="n#getRecentComments#0;n#!!top" />
-                <element signature="n#countUserCJ#0;n#!!top" />
-                <element signature="n#userCount#0;n#!!top" />
-                <element signature="n#addMeToFriend#0;n#!!top" />
-                <element signature="n#ghsfriendcheck#0;n#!!top" />
-                <element signature="n#ytAnaData#0;n#!!top" />
-                <element signature="n#ghs_oauth#0;n#!!top" />
-                <element signature="n#ghs_token#0;n#!!top" />
-                <element signature="n#getTokenUserData#0;n#!!top" />
-                <element signature="n#getSocialStats#0;n#!!top" />
-                <element signature="n#socialStats#0;n#!!top" />
-                <element signature="n#authInstag#0;n#!!top" />
-                <element signature="n#updateImg#0;n#!!top" />
-                <element signature="n#updataUser#0;n#!!top" />
+                <element signature="e#6#418#0#PHP" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -66,8 +33,8 @@
       <file leaf-file-name="ghs_includes.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/libs/ghs_includes.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="32" lean-forward="true" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+            <state relative-caret-position="136">
+              <caret line="8" column="46" selection-end-line="16" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -115,7 +82,7 @@
     <servers />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="793" />
+    <option name="x" value="-7" />
     <option name="width" value="814" />
     <option name="height" value="907" />
   </component>
@@ -267,7 +234,7 @@
       <workItem from="1525841639178" duration="730000" />
       <workItem from="1525844489871" duration="559000" />
       <workItem from="1525982406992" duration="592000" />
-      <workItem from="1525985478340" duration="22055000" />
+      <workItem from="1525985478340" duration="26031000" />
     </task>
     <task id="LOCAL-00001" summary="Facebook stats added correctly">
       <created>1522386622930</created>
@@ -276,11 +243,25 @@
       <option name="project" value="LOCAL" />
       <updated>1522386622930</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="profile update">
+      <created>1526482476767</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1526482476767</updated>
+    </task>
+    <task id="LOCAL-00003" summary="oauth">
+      <created>1526486635160</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1526486635160</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52637000" />
+    <option name="totallyTimeSpent" value="56613000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="916" extended-state="6" />
@@ -349,8 +330,11 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <MESSAGE value="Facebook stats added correctly" />
-    <option name="LAST_COMMIT_MESSAGE" value="Facebook stats added correctly" />
+    <MESSAGE value="profile update" />
+    <MESSAGE value="oauth" />
+    <option name="LAST_COMMIT_MESSAGE" value="oauth" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -363,42 +347,9 @@
         <state relative-caret-position="24616">
           <caret line="1448" column="26" selection-start-line="1448" selection-start-column="26" selection-end-line="1448" selection-end-column="26" />
           <folding>
-            <element signature="n#logout#0;n#!!top" />
-            <element signature="n#insert_mailing_user#0;n#!!top" />
-            <element signature="n#mailing#0;n#!!top" />
-            <element signature="n#login#0;n#!!top" />
-            <element signature="n#signup#0;n#!!top" />
-            <element signature="n#social#0;n#!!top" />
-            <element signature="n#sendgameData#0;n#!!top" />
-            <element signature="n#ghs_post#0;n#!!top" />
-            <element signature="n#carouselItems#0;n#!!top" />
-            <element signature="n#singlePost#0;n#!!top" />
-            <element signature="n#getComments#0;n#!!top" />
-            <element signature="n#friendsList#0;n#!!top" />
-            <element signature="n#addFriend#0;n#!!top" />
-            <element signature="n#grabGameList#0;n#!!top" />
-            <element signature="n#contactUs#0;n#!!top" />
-            <element signature="n#userFeed#0;n#!!top" />
-            <element signature="n#get_user_img#0;n#!!top" />
-            <element signature="n#userUpdate#0;n#!!top" />
-            <element signature="n#badgeUnlock#0;n#!!top" />
-            <element signature="n#post_comment#0;n#!!top" />
-            <element signature="n#uploadMedia#0;n#!!top" />
-            <element signature="n#sendingEmail#0;n#!!top" />
-            <element signature="n#getRecentComments#0;n#!!top" />
-            <element signature="n#countUserCJ#0;n#!!top" />
-            <element signature="n#userCount#0;n#!!top" />
-            <element signature="n#addMeToFriend#0;n#!!top" />
-            <element signature="n#ghsfriendcheck#0;n#!!top" />
-            <element signature="n#ytAnaData#0;n#!!top" />
-            <element signature="n#ghs_oauth#0;n#!!top" />
-            <element signature="n#ghs_token#0;n#!!top" />
-            <element signature="n#getTokenUserData#0;n#!!top" />
-            <element signature="n#getSocialStats#0;n#!!top" />
-            <element signature="n#socialStats#0;n#!!top" />
-            <element signature="n#authInstag#0;n#!!top" />
-            <element signature="n#updateImg#0;n#!!top" />
-            <element signature="n#updataUser#0;n#!!top" />
+            <element signature="e#6#418#0#PHP" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -415,42 +366,9 @@
         <state relative-caret-position="24616">
           <caret line="1448" column="26" selection-start-line="1448" selection-start-column="26" selection-end-line="1448" selection-end-column="26" />
           <folding>
-            <element signature="n#logout#0;n#!!top" />
-            <element signature="n#insert_mailing_user#0;n#!!top" />
-            <element signature="n#mailing#0;n#!!top" />
-            <element signature="n#login#0;n#!!top" />
-            <element signature="n#signup#0;n#!!top" />
-            <element signature="n#social#0;n#!!top" />
-            <element signature="n#sendgameData#0;n#!!top" />
-            <element signature="n#ghs_post#0;n#!!top" />
-            <element signature="n#carouselItems#0;n#!!top" />
-            <element signature="n#singlePost#0;n#!!top" />
-            <element signature="n#getComments#0;n#!!top" />
-            <element signature="n#friendsList#0;n#!!top" />
-            <element signature="n#addFriend#0;n#!!top" />
-            <element signature="n#grabGameList#0;n#!!top" />
-            <element signature="n#contactUs#0;n#!!top" />
-            <element signature="n#userFeed#0;n#!!top" />
-            <element signature="n#get_user_img#0;n#!!top" />
-            <element signature="n#userUpdate#0;n#!!top" />
-            <element signature="n#badgeUnlock#0;n#!!top" />
-            <element signature="n#post_comment#0;n#!!top" />
-            <element signature="n#uploadMedia#0;n#!!top" />
-            <element signature="n#sendingEmail#0;n#!!top" />
-            <element signature="n#getRecentComments#0;n#!!top" />
-            <element signature="n#countUserCJ#0;n#!!top" />
-            <element signature="n#userCount#0;n#!!top" />
-            <element signature="n#addMeToFriend#0;n#!!top" />
-            <element signature="n#ghsfriendcheck#0;n#!!top" />
-            <element signature="n#ytAnaData#0;n#!!top" />
-            <element signature="n#ghs_oauth#0;n#!!top" />
-            <element signature="n#ghs_token#0;n#!!top" />
-            <element signature="n#getTokenUserData#0;n#!!top" />
-            <element signature="n#getSocialStats#0;n#!!top" />
-            <element signature="n#socialStats#0;n#!!top" />
-            <element signature="n#authInstag#0;n#!!top" />
-            <element signature="n#updateImg#0;n#!!top" />
-            <element signature="n#updataUser#0;n#!!top" />
+            <element signature="e#6#418#0#PHP" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -467,42 +385,9 @@
         <state relative-caret-position="24616">
           <caret line="1448" column="26" selection-start-line="1448" selection-start-column="26" selection-end-line="1448" selection-end-column="26" />
           <folding>
-            <element signature="n#logout#0;n#!!top" />
-            <element signature="n#insert_mailing_user#0;n#!!top" />
-            <element signature="n#mailing#0;n#!!top" />
-            <element signature="n#login#0;n#!!top" />
-            <element signature="n#signup#0;n#!!top" />
-            <element signature="n#social#0;n#!!top" />
-            <element signature="n#sendgameData#0;n#!!top" />
-            <element signature="n#ghs_post#0;n#!!top" />
-            <element signature="n#carouselItems#0;n#!!top" />
-            <element signature="n#singlePost#0;n#!!top" />
-            <element signature="n#getComments#0;n#!!top" />
-            <element signature="n#friendsList#0;n#!!top" />
-            <element signature="n#addFriend#0;n#!!top" />
-            <element signature="n#grabGameList#0;n#!!top" />
-            <element signature="n#contactUs#0;n#!!top" />
-            <element signature="n#userFeed#0;n#!!top" />
-            <element signature="n#get_user_img#0;n#!!top" />
-            <element signature="n#userUpdate#0;n#!!top" />
-            <element signature="n#badgeUnlock#0;n#!!top" />
-            <element signature="n#post_comment#0;n#!!top" />
-            <element signature="n#uploadMedia#0;n#!!top" />
-            <element signature="n#sendingEmail#0;n#!!top" />
-            <element signature="n#getRecentComments#0;n#!!top" />
-            <element signature="n#countUserCJ#0;n#!!top" />
-            <element signature="n#userCount#0;n#!!top" />
-            <element signature="n#addMeToFriend#0;n#!!top" />
-            <element signature="n#ghsfriendcheck#0;n#!!top" />
-            <element signature="n#ytAnaData#0;n#!!top" />
-            <element signature="n#ghs_oauth#0;n#!!top" />
-            <element signature="n#ghs_token#0;n#!!top" />
-            <element signature="n#getTokenUserData#0;n#!!top" />
-            <element signature="n#getSocialStats#0;n#!!top" />
-            <element signature="n#socialStats#0;n#!!top" />
-            <element signature="n#authInstag#0;n#!!top" />
-            <element signature="n#updateImg#0;n#!!top" />
-            <element signature="n#updataUser#0;n#!!top" />
+            <element signature="e#6#418#0#PHP" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -519,42 +404,9 @@
         <state relative-caret-position="24616">
           <caret line="1448" column="26" selection-start-line="1448" selection-start-column="26" selection-end-line="1448" selection-end-column="26" />
           <folding>
-            <element signature="n#logout#0;n#!!top" />
-            <element signature="n#insert_mailing_user#0;n#!!top" />
-            <element signature="n#mailing#0;n#!!top" />
-            <element signature="n#login#0;n#!!top" />
-            <element signature="n#signup#0;n#!!top" />
-            <element signature="n#social#0;n#!!top" />
-            <element signature="n#sendgameData#0;n#!!top" />
-            <element signature="n#ghs_post#0;n#!!top" />
-            <element signature="n#carouselItems#0;n#!!top" />
-            <element signature="n#singlePost#0;n#!!top" />
-            <element signature="n#getComments#0;n#!!top" />
-            <element signature="n#friendsList#0;n#!!top" />
-            <element signature="n#addFriend#0;n#!!top" />
-            <element signature="n#grabGameList#0;n#!!top" />
-            <element signature="n#contactUs#0;n#!!top" />
-            <element signature="n#userFeed#0;n#!!top" />
-            <element signature="n#get_user_img#0;n#!!top" />
-            <element signature="n#userUpdate#0;n#!!top" />
-            <element signature="n#badgeUnlock#0;n#!!top" />
-            <element signature="n#post_comment#0;n#!!top" />
-            <element signature="n#uploadMedia#0;n#!!top" />
-            <element signature="n#sendingEmail#0;n#!!top" />
-            <element signature="n#getRecentComments#0;n#!!top" />
-            <element signature="n#countUserCJ#0;n#!!top" />
-            <element signature="n#userCount#0;n#!!top" />
-            <element signature="n#addMeToFriend#0;n#!!top" />
-            <element signature="n#ghsfriendcheck#0;n#!!top" />
-            <element signature="n#ytAnaData#0;n#!!top" />
-            <element signature="n#ghs_oauth#0;n#!!top" />
-            <element signature="n#ghs_token#0;n#!!top" />
-            <element signature="n#getTokenUserData#0;n#!!top" />
-            <element signature="n#getSocialStats#0;n#!!top" />
-            <element signature="n#socialStats#0;n#!!top" />
-            <element signature="n#authInstag#0;n#!!top" />
-            <element signature="n#updateImg#0;n#!!top" />
-            <element signature="n#updataUser#0;n#!!top" />
+            <element signature="e#6#418#0#PHP" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -571,42 +423,9 @@
         <state relative-caret-position="697">
           <caret line="54" column="4" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="4" />
           <folding>
-            <element signature="n#logout#0;n#!!top" />
-            <element signature="n#insert_mailing_user#0;n#!!top" />
-            <element signature="n#mailing#0;n#!!top" />
-            <element signature="n#login#0;n#!!top" />
-            <element signature="n#signup#0;n#!!top" />
-            <element signature="n#social#0;n#!!top" />
-            <element signature="n#sendgameData#0;n#!!top" />
-            <element signature="n#ghs_post#0;n#!!top" />
-            <element signature="n#carouselItems#0;n#!!top" />
-            <element signature="n#singlePost#0;n#!!top" />
-            <element signature="n#getComments#0;n#!!top" />
-            <element signature="n#friendsList#0;n#!!top" />
-            <element signature="n#addFriend#0;n#!!top" />
-            <element signature="n#grabGameList#0;n#!!top" />
-            <element signature="n#contactUs#0;n#!!top" />
-            <element signature="n#userFeed#0;n#!!top" />
-            <element signature="n#get_user_img#0;n#!!top" />
-            <element signature="n#userUpdate#0;n#!!top" />
-            <element signature="n#badgeUnlock#0;n#!!top" />
-            <element signature="n#post_comment#0;n#!!top" />
-            <element signature="n#uploadMedia#0;n#!!top" />
-            <element signature="n#sendingEmail#0;n#!!top" />
-            <element signature="n#getRecentComments#0;n#!!top" />
-            <element signature="n#countUserCJ#0;n#!!top" />
-            <element signature="n#userCount#0;n#!!top" />
-            <element signature="n#addMeToFriend#0;n#!!top" />
-            <element signature="n#ghsfriendcheck#0;n#!!top" />
-            <element signature="n#ytAnaData#0;n#!!top" />
-            <element signature="n#ghs_oauth#0;n#!!top" />
-            <element signature="n#ghs_token#0;n#!!top" />
-            <element signature="n#getTokenUserData#0;n#!!top" />
-            <element signature="n#getSocialStats#0;n#!!top" />
-            <element signature="n#socialStats#0;n#!!top" />
-            <element signature="n#authInstag#0;n#!!top" />
-            <element signature="n#updateImg#0;n#!!top" />
-            <element signature="n#updataUser#0;n#!!top" />
+            <element signature="e#6#418#0#PHP" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -648,52 +467,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/libs/ghs_includes.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="32" lean-forward="true" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+        <state relative-caret-position="136">
+          <caret line="8" column="46" selection-end-line="16" selection-end-column="41" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="407">
-          <caret line="300" column="38" lean-forward="true" selection-start-line="300" selection-start-column="38" selection-end-line="300" selection-end-column="38" />
+        <state relative-caret-position="264">
+          <caret line="1723" column="62" lean-forward="true" selection-start-line="1723" selection-start-column="62" selection-end-line="1723" selection-end-column="62" />
           <folding>
-            <element signature="n#logout#0;n#!!top" />
-            <element signature="n#insert_mailing_user#0;n#!!top" />
-            <element signature="n#mailing#0;n#!!top" />
-            <element signature="n#login#0;n#!!top" />
-            <element signature="n#signup#0;n#!!top" />
-            <element signature="n#social#0;n#!!top" />
-            <element signature="n#sendgameData#0;n#!!top" />
-            <element signature="n#ghs_post#0;n#!!top" />
-            <element signature="n#carouselItems#0;n#!!top" />
-            <element signature="n#singlePost#0;n#!!top" />
-            <element signature="n#getComments#0;n#!!top" />
-            <element signature="n#friendsList#0;n#!!top" />
-            <element signature="n#addFriend#0;n#!!top" />
-            <element signature="n#grabGameList#0;n#!!top" />
-            <element signature="n#contactUs#0;n#!!top" />
-            <element signature="n#userFeed#0;n#!!top" />
-            <element signature="n#get_user_img#0;n#!!top" />
-            <element signature="n#userUpdate#0;n#!!top" />
-            <element signature="n#badgeUnlock#0;n#!!top" />
-            <element signature="n#post_comment#0;n#!!top" />
-            <element signature="n#uploadMedia#0;n#!!top" />
-            <element signature="n#sendingEmail#0;n#!!top" />
-            <element signature="n#getRecentComments#0;n#!!top" />
-            <element signature="n#countUserCJ#0;n#!!top" />
-            <element signature="n#userCount#0;n#!!top" />
-            <element signature="n#addMeToFriend#0;n#!!top" />
-            <element signature="n#ghsfriendcheck#0;n#!!top" />
-            <element signature="n#ytAnaData#0;n#!!top" />
-            <element signature="n#ghs_oauth#0;n#!!top" />
-            <element signature="n#ghs_token#0;n#!!top" />
-            <element signature="n#getTokenUserData#0;n#!!top" />
-            <element signature="n#getSocialStats#0;n#!!top" />
-            <element signature="n#socialStats#0;n#!!top" />
-            <element signature="n#authInstag#0;n#!!top" />
-            <element signature="n#updateImg#0;n#!!top" />
-            <element signature="n#updataUser#0;n#!!top" />
+            <element signature="e#6#418#0#PHP" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
