@@ -222,6 +222,70 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/userToken/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'userToken'
+        )
+    );
+
+}
+
+function getTokenData($token){
+
+    $data['success'] = false;
+
+    $result = wp_remote_post('http://ghostszmusic.com/wp-json/wp/v2/users/me', array(
+        'method' => 'POST',
+        'timeout' => 45,
+        'redirection' => 5,
+        'httpversion' => '1.0',
+        'blocking' => true,
+        'headers' => array('Authorization' => 'Bearer ' . $token),
+        'body' => array(),
+        'cookies' => array()
+    ));
+
+    if ( is_wp_error( $result ) ) {
+        $data['error_message'] = $result->get_error_message();
+    } else {
+        $data['success'] = true;
+        $data['user'] = $result;
+    }
+
+    return $data;
+
+}
+
+function userToken(){
+
+    $data['success'] = false;
+
+    $user_name = $_REQUEST['userName'];
+    $user_pass = $_REQUEST['user_password'];
+
+    $result = wp_remote_post('http://ghostszmusic.com/wp-json/jwt-auth/v1/token', array(
+        'method' => 'POST',
+        'timeout' => 45,
+        'redirection' => 5,
+        'httpversion' => '1.0',
+        'blocking' => true,
+        'headers' => array(),
+        'body' => array(
+            'username' => $user_name,
+            'password' => $user_pass
+        ),
+        'cookies' => array()
+    ));
+
+    if ( is_wp_error( $result ) ) {
+        $data['error_message'] = $result->get_error_message();
+    } else {
+        $data['success'] = true;
+        $data['user'] = $result->body;
+    }
+
+    return $data;
 }
 
 function getuserdata($ID){
