@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6b141ecd-9520-4cfe-aac1-e92b73f446b8" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/ghs_includes.php" beforeDir="false" afterPath="$PROJECT_DIR$/libs/ghs_includes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,11 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="427">
-              <caret line="1731" selection-start-line="1731" selection-end-line="1731" />
+            <state relative-caret-position="-844">
+              <caret line="1306" column="1" selection-start-line="1306" selection-start-column="1" selection-end-line="1306" selection-end-column="1" />
               <folding>
                 <element signature="e#6#418#0#PHP" expanded="true" />
               </folding>
@@ -27,11 +27,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ghs_includes.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ghs_includes.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/libs/ghs_includes.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="34">
-              <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+              <caret line="2" selection-start-line="2" selection-end-line="2" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="wp-config.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../../wp-config.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="476">
+              <caret line="75" lean-forward="true" selection-start-line="75" selection-end-line="76" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -61,8 +70,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/.idea/ghs_api.iml" />
-        <option value="$PROJECT_DIR$/index.php" />
         <option value="$PROJECT_DIR$/libs/ghs_includes.php" />
+        <option value="$PROJECT_DIR$/../../../wp-config.php" />
+        <option value="$PROJECT_DIR$/index.php" />
       </list>
     </option>
   </component>
@@ -80,8 +90,8 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
-    <option name="width" value="814" />
-    <option name="height" value="907" />
+    <option name="width" value="694" />
+    <option name="height" value="775" />
   </component>
   <component name="ProjectLevelVcsManager">
     <OptionsSetting value="false" id="Update" />
@@ -234,7 +244,7 @@
       <workItem from="1525985478340" duration="26031000" />
       <workItem from="1526538568552" duration="1212000" />
       <workItem from="1531522007848" duration="1194000" />
-      <workItem from="1531582551825" duration="296000" />
+      <workItem from="1531582551825" duration="2791000" />
     </task>
     <task id="LOCAL-00001" summary="Facebook stats added correctly">
       <created>1522386622930</created>
@@ -264,11 +274,18 @@
       <option name="project" value="LOCAL" />
       <updated>1526538587672</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="removed">
+      <created>1531582871281</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1531582871281</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="59315000" />
+    <option name="totallyTimeSpent" value="61810000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1376" height="784" extended-state="6" />
@@ -341,7 +358,8 @@
     <MESSAGE value="Facebook stats added correctly" />
     <MESSAGE value="profile update" />
     <MESSAGE value="oauth" />
-    <option name="LAST_COMMIT_MESSAGE" value="oauth" />
+    <MESSAGE value="removed" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -513,20 +531,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="427">
-          <caret line="1731" selection-start-line="1731" selection-end-line="1731" />
-          <folding>
-            <element signature="e#6#418#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/libs/ghs_includes.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
-          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../wp-config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="75" lean-forward="true" selection-start-line="75" selection-end-line="76" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-844">
+          <caret line="1306" column="1" selection-start-line="1306" selection-start-column="1" selection-end-line="1306" selection-end-column="1" />
+          <folding>
+            <element signature="e#6#418#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
