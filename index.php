@@ -229,11 +229,20 @@ function ghs_webservice_route(){
         )
     );
 
+    register_rest_route('ghs_api/v1', '/getTokenData/',
+        array(
+            'methods' => 'POST',
+            'callback' => 'getTokenData'
+        )
+    );
+
 }
 
 function getTokenData($token){
 
     $data['success'] = false;
+
+    $tok = ($token == null) ? $token : $_REQUEST['token'];
 
     $result = wp_remote_post('http://ghostszmusic.com/wp-json/wp/v2/users/me', array(
         'method' => 'POST',
@@ -241,7 +250,7 @@ function getTokenData($token){
         'redirection' => 5,
         'httpversion' => '1.0',
         'blocking' => true,
-        'headers' => array('Authorization' => 'Bearer ' . $token),
+        'headers' => array('Authorization' => 'Bearer ' . $tok),
         'body' => array(),
         'cookies' => array()
     ));
@@ -250,7 +259,9 @@ function getTokenData($token){
         $data['error_message'] = $result->get_error_message();
     } else {
         $data['success'] = true;
-        $data['user'] = $result;
+        $user = json_decode(wp_remote_retrieve_body($result), true);
+
+        $data['id'] = $user['id'];
     }
 
     return $data;
@@ -282,7 +293,7 @@ function userToken(){
         $data['error_message'] = $result->get_error_message();
     } else {
         $data['success'] = true;
-        $data['user'] = $result->body;
+        $data['user'] = json_decode(wp_remote_retrieve_body($result), true);
     }
 
     return $data;

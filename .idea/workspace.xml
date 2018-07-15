@@ -18,8 +18,8 @@
       <file leaf-file-name="index.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-844">
-              <caret line="1306" column="1" selection-start-line="1306" selection-start-column="1" selection-end-line="1306" selection-end-column="1" />
+            <state relative-caret-position="333">
+              <caret line="316" column="46" lean-forward="true" selection-start-line="316" selection-start-column="46" selection-end-line="316" selection-end-column="46" />
               <folding>
                 <element signature="e#6#418#0#PHP" expanded="true" />
               </folding>
@@ -58,6 +58,8 @@
       <find>user_icon</find>
       <find>getuserdata</find>
       <find>830</find>
+      <find>wp_remo</find>
+      <find>post</find>
     </findStrings>
     <replaceStrings>
       <replace>/</replace>
@@ -89,8 +91,9 @@
     <servers />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
-    <option name="width" value="694" />
+    <option name="x" value="10" />
+    <option name="y" value="-18" />
+    <option name="width" value="814" />
     <option name="height" value="775" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -244,7 +247,7 @@
       <workItem from="1525985478340" duration="26031000" />
       <workItem from="1526538568552" duration="1212000" />
       <workItem from="1531522007848" duration="1194000" />
-      <workItem from="1531582551825" duration="2791000" />
+      <workItem from="1531582551825" duration="11713000" />
     </task>
     <task id="LOCAL-00001" summary="Facebook stats added correctly">
       <created>1522386622930</created>
@@ -281,11 +284,25 @@
       <option name="project" value="LOCAL" />
       <updated>1531582871281</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="removed unused code">
+      <created>1531586401737</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1531586401737</updated>
+    </task>
+    <task id="LOCAL-00007" summary="removed unused code">
+      <created>1531599448007</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1531599448007</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="61810000" />
+    <option name="totallyTimeSpent" value="70732000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1376" height="784" extended-state="6" />
@@ -355,11 +372,13 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Facebook stats added correctly" />
     <MESSAGE value="profile update" />
     <MESSAGE value="oauth" />
     <MESSAGE value="removed" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed" />
+    <MESSAGE value="removed unused code" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed unused code" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -547,8 +566,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-844">
-          <caret line="1306" column="1" selection-start-line="1306" selection-start-column="1" selection-end-line="1306" selection-end-column="1" />
+        <state relative-caret-position="333">
+          <caret line="316" column="46" lean-forward="true" selection-start-line="316" selection-start-column="46" selection-end-line="316" selection-end-column="46" />
           <folding>
             <element signature="e#6#418#0#PHP" expanded="true" />
           </folding>
