@@ -268,12 +268,13 @@ function getTokenData($token){
 
 }
 
-function userToken(){
+function userToken($userName, $password){
 
     $data['success'] = false;
 
-    $user_name = $_REQUEST['userName'];
-    $user_pass = $_REQUEST['user_password'];
+//    ($user['permissions'] == 'admin') ? true : false;
+    $user_name = $_REQUEST['userName'] ?: $userName;
+    $user_pass = $_REQUEST['user_password'] ?: $password;
 
     $result = wp_remote_post('http://ghostszmusic.com/wp-json/jwt-auth/v1/token', array(
         'method' => 'POST',
@@ -340,6 +341,8 @@ function getuserdata($ID){
         $data['user']['user_icon_big'] = $userIconBig[0]['img'];
         $data['user']['user_icon_100'] = $userIcon100[0]['img'];
         $data['user']['blog_id'] = $blog_id;
+        $data['user']['google'] = $user->data->google;
+        $data['user']['facebook'] = $user->data->facebook;
 
         $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
 
@@ -434,7 +437,7 @@ function login($user = []){
         'remember' => $_REQUEST['remember'] ?: true
     ];
 
-    $data['user'] = $cred;
+//    $data['user'] = $cred;
     $auth = "";
 
     $gameID = $_REQUEST['gameID'];
@@ -448,18 +451,20 @@ function login($user = []){
         $data['success'] = true;
         wp_set_auth_cookie($user->data->ID);
         do_action('wp_login', $user->data);
-        $auth = ghs_oauth();
+        $auth = userToken($cred['user_login'], $cred['user_password']);
         $userInfo = $user->data;
 
-        $data['token'] = $auth->result->access_token;
-        $data['ID'] = $userInfo->ID;
-        $data['firstName'] = $userInfo->firstName;
-        $data['lastName'] = $userInfo->lastName;
-        $data['userName'] = $userInfo->user_login;
-        $data['email'] = $userInfo->user_email;
-        $data['password'] = $cred['user_password'];
-        $data['facebook'] = $userInfo->facebook;
-        $data['google'] = $userInfo->google;
+        $user = getuserdata($userInfo->ID);
+        $data['token'] = $auth['user']['token'];
+        $data['ID'] = $user['user']['ID'];
+        $data['firstName'] = $user['user']['first_name'];
+        $data['lastName'] = $user['user']['last_name'];
+        $data['name'] = $user['user']['name'];
+        $data['userName'] = $user['user']['userName'];
+        $data['email'] = $user['user']['email'];
+        $data['facebook'] = $user['user']['google'];
+        $data['google'] = $user['user']['facebook'];
+        $data['user_icon'] = $user['user']['user_icon'];
 
         if($gameID){
 
@@ -470,7 +475,7 @@ function login($user = []){
             }
 
             if($score){
-                $data['highscore'] = $score[0]->score;
+                $data['score'] = $score[0]->score;
             }
 
         }
