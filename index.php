@@ -14,12 +14,6 @@
  * Author URI:        http://Ghostszmusic.com
  */
 
-//includes
-require_once(dirname( __FILE__ ) . '/libs/ghs_includes.php');
-require_once(dirname( __FILE__ ) . '/libs/PHP-OAuth2-master/src/OAuth2/Client.php');
-require_once(dirname( __FILE__ ) . '/libs/PHP-OAuth2-master/src/OAuth2/GrantType/IGrantType.php');
-require_once(dirname( __FILE__ ) . '/libs/PHP-OAuth2-master/src/OAuth2/GrantType/AuthorizationCode.php');
-
 //adding actions
 add_action('rest_api_init', 'ghs_webservice_route');
 
@@ -242,7 +236,7 @@ function getTokenData($token){
 
     $data['success'] = false;
 
-    $tok = ($token == null) ? $token : $_REQUEST['token'];
+    $tok = $token ?: $_REQUEST['token'];
 
     $result = wp_remote_post('http://ghostszmusic.com/wp-json/wp/v2/users/me', array(
         'method' => 'POST',
@@ -300,16 +294,22 @@ function userToken($userName, $password){
     return $data;
 }
 
-function getuserdata($ID){
+function getuserdata($token){
 
     $data['success'] = false;
     global $wpdb;
 
-    $user_ID = $_REQUEST['user_ID'] ?: $ID;
+    $tokenData = $_REQUEST['token'] ?: $token;
+    $userID = $_REQUEST['user_ID'] ?: get_current_user_id();
     $blog_id = get_current_blog_id();
+    $user_ID = getTokenData($tokenData);
 
-    $user = get_userdata($user_ID);
-//    $data['test'] = $user;
+    if($user_ID['id'] == null){
+        $user_ID['id'] = $userID;
+    }
+
+    $user = get_userdata($user_ID['id']);
+    $data['test'] = $user_ID;
 
     if($user){
 
@@ -449,22 +449,21 @@ function login($user = []){
         $data['success'] = false;
     } else {
         $data['success'] = true;
-        wp_set_auth_cookie($user->data->ID);
         do_action('wp_login', $user->data);
-        $auth = userToken($cred['user_login'], $cred['user_password']);
-        $userInfo = $user->data;
+        $token = userToken($cred['user_login'], $cred['user_password']);
 
-        $user = getuserdata($userInfo->ID);
-        $data['token'] = $auth['user']['token'];
-        $data['ID'] = $user['user']['ID'];
-        $data['firstName'] = $user['user']['first_name'];
-        $data['lastName'] = $user['user']['last_name'];
-        $data['name'] = $user['user']['name'];
-        $data['userName'] = $user['user']['userName'];
-        $data['email'] = $user['user']['email'];
-        $data['facebook'] = $user['user']['google'];
-        $data['google'] = $user['user']['facebook'];
-        $data['user_icon'] = $user['user']['user_icon'];
+        $data['token'] = $token['user']['token'];
+        $userInfo = getuserdata($token['user']['token']);
+
+        $data['ID'] = $userInfo['user']['ID'];
+        $data['firstName'] = $userInfo['user']['first_name'];
+        $data['lastName'] = $userInfo['user']['last_name'];
+        $data['userName'] = $userInfo['user']['userName'];
+        $data['email'] = $userInfo['user']['email'];
+        $data['facebook'] = $userInfo['user']['facebook'];
+        $data['google'] = $userInfo['user']['google'];
+        $data['useBlob'] = $userInfo['user']['useBlob'];
+        $data['user_icon'] = $userInfo['user']['user_icon_big'];
 
         if($gameID){
 
@@ -475,7 +474,7 @@ function login($user = []){
             }
 
             if($score){
-                $data['score'] = $score[0]->score;
+                $data['highscore'] = $score[0]->score;
             }
 
         }
