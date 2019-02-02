@@ -16,6 +16,7 @@
 
 //adding actions
 add_action('rest_api_init', 'ghs_webservice_route');
+include (dirname( __FILE__ ) . '/libs/ghs_includes.php');
 
 //functions
 function ghs_webservice_route(){
@@ -236,10 +237,10 @@ function getTokenData($token){
 
     $data['success'] = false;
 
-    $tok = $token ?: $_REQUEST['token'];
+    $tok = $_REQUEST['token'] ?: $token;
 
-    $result = wp_remote_post('http://ghostszmusic.com/wp-json/wp/v2/users/me', array(
-        'method' => 'POST',
+    $result = wp_remote_post(site . 'wp-json/wp/v2/users/me', array(
+        'method' => 'GET',
         'timeout' => 45,
         'redirection' => 5,
         'httpversion' => '1.0',
@@ -255,7 +256,7 @@ function getTokenData($token){
         $data['success'] = true;
         $user = json_decode(wp_remote_retrieve_body($result), true);
 
-        $data['id'] = $user['id'];
+        $data['id'] = $user;
     }
 
     return $data;
@@ -276,7 +277,9 @@ function userToken($userName, $password){
         'redirection' => 5,
         'httpversion' => '1.0',
         'blocking' => true,
-        'headers' => array(),
+        'headers' => array(
+            'Access-Control-Allow-Credentials' => true
+        ),
         'body' => array(
             'username' => $user_name,
             'password' => $user_pass
@@ -289,6 +292,14 @@ function userToken($userName, $password){
     } else {
         $data['success'] = true;
         $data['user'] = json_decode(wp_remote_retrieve_body($result), true);
+
+//        $data['l'] = $data['user']['token'];
+        setcookie('token', (string)$data['user']['token'], time() + (86400 * 7), '/', base_site);
+        if(isset($_COOKIE['token'])){
+            $data['cookie_set'] = true;
+        } else {
+            $data['cookie_set'] = false;
+        }
     }
 
     return $data;
@@ -304,62 +315,64 @@ function getuserdata($token){
     $blog_id = get_current_blog_id();
     $user_ID = getTokenData($tokenData);
 
-    if($user_ID['id'] == null){
-        $user_ID['id'] = $userID;
-    }
-
-    $user = get_userdata($user_ID['id']);
     $data['test'] = $user_ID;
 
-    if($user){
+//    if($user_ID['id'] == null){
+//        $user_ID['id'] = $userID;
+//    }
+//
+//    $user = get_userdata($user_ID['id']);
+//    $data['test'] = $user_ID;
 
-        $data['success'] = true;
-
-        $data['user']['ID'] = $user->data->ID;
-        $data['user']['first_name'] = ucwords($user->data->firstName);
-        $data['user']['last_name'] = ucwords($user->data->lastName);
-
-        if(!empty($user->data->firstName) && !empty($user->data->lastName)){
-            $data['user']['name'] = ucwords($user->data->firstName . ' ' . $user->data->lastName);
-        } else {
-            $data['user']['name'] = '';
-        }
-
-        $data['user']['email'] = $user->data->user_email;
-        $data['user']['gender'] = $user->data->gender;
-        $data['user']['userName'] = ucwords($user->data->user_login);
-        $data['user']['birthday'] = $user->data->birthday;
-        list($year, $month, $day) = explode('[/.-]', $user->data->birthday);
-        $data['user']['month'] = $month;
-        $data['user']['date'] = $day;
-        $data['user']['year'] = $year;
-        $userIcon[] = get_user_img($user->data->ID, 40);
-        $userIconBig[] = get_user_img($user->data->ID, 72);
-        $userIcon100[] = get_user_img($user->data->ID, 100);
-        $data['user']['useBlob'] = $userIcon[0]['yes'];
-        $data['user']['user_icon'] = $userIcon[0]['img'];
-        $data['user']['user_icon_big'] = $userIconBig[0]['img'];
-        $data['user']['user_icon_100'] = $userIcon100[0]['img'];
-        $data['user']['blog_id'] = $blog_id;
-        $data['user']['google'] = $user->data->google;
-        $data['user']['facebook'] = $user->data->facebook;
-
-        $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
-
-        if($img){
-
-            $data['user']['backgroundImg'] = $img;
-
-        } else {
-
-            $data['user']['backgroundImg'] = "/wp-content/uploads/2017/05/profile-bg.png";
-
-        }
-
-    } else {
-
-        $data['error_message'] = "You're not currently signed in!";
-    }
+//    if($user){
+//
+//        $data['success'] = true;
+//
+//        $data['user']['ID'] = $user->data->ID;
+//        $data['user']['first_name'] = ucwords($user->data->firstName);
+//        $data['user']['last_name'] = ucwords($user->data->lastName);
+//
+//        if(!empty($user->data->firstName) && !empty($user->data->lastName)){
+//            $data['user']['name'] = ucwords($user->data->firstName . ' ' . $user->data->lastName);
+//        } else {
+//            $data['user']['name'] = '';
+//        }
+//
+//        $data['user']['email'] = $user->data->user_email;
+//        $data['user']['gender'] = $user->data->gender;
+//        $data['user']['userName'] = ucwords($user->data->user_login);
+//        $data['user']['birthday'] = $user->data->birthday;
+//        list($year, $month, $day) = explode('[/.-]', $user->data->birthday);
+//        $data['user']['month'] = $month;
+//        $data['user']['date'] = $day;
+//        $data['user']['year'] = $year;
+//        $userIcon[] = get_user_img($user->data->ID, 40);
+//        $userIconBig[] = get_user_img($user->data->ID, 72);
+//        $userIcon100[] = get_user_img($user->data->ID, 100);
+//        $data['user']['useBlob'] = $userIcon[0]['yes'];
+//        $data['user']['user_icon'] = $userIcon[0]['img'];
+//        $data['user']['user_icon_big'] = $userIconBig[0]['img'];
+//        $data['user']['user_icon_100'] = $userIcon100[0]['img'];
+//        $data['user']['blog_id'] = $blog_id;
+//        $data['user']['google'] = $user->data->google;
+//        $data['user']['facebook'] = $user->data->facebook;
+//
+//        $img = $wpdb->get_results("SELECT `backgroundImg` FROM `userStats` WHERE `userID` = '" . $user->data->ID ."'");
+//
+//        if($img){
+//
+//            $data['user']['backgroundImg'] = $img;
+//
+//        } else {
+//
+//            $data['user']['backgroundImg'] = "/wp-content/uploads/2017/05/profile-bg.png";
+//
+//        }
+//
+//    } else {
+//
+//        $data['error_message'] = "You're not currently signed in!";
+//    }
 
     return $data;
 
@@ -452,18 +465,20 @@ function login($user = []){
         do_action('wp_login', $user->data);
         $token = userToken($cred['user_login'], $cred['user_password']);
 
+//        $data['test'] = $token;
         $data['token'] = $token['user']['token'];
         $userInfo = getuserdata($token['user']['token']);
 
-        $data['ID'] = $userInfo['user']['ID'];
-        $data['firstName'] = $userInfo['user']['first_name'];
-        $data['lastName'] = $userInfo['user']['last_name'];
-        $data['userName'] = $userInfo['user']['userName'];
-        $data['email'] = $userInfo['user']['email'];
-        $data['facebook'] = $userInfo['user']['facebook'];
-        $data['google'] = $userInfo['user']['google'];
-        $data['useBlob'] = $userInfo['user']['useBlob'];
-        $data['user_icon'] = $userInfo['user']['user_icon_big'];
+        $data['ID'] = $user->data->ID;
+        $data['firstName'] = $user->data->first_name;
+        $data['lastName'] = $user->data->last_name;
+        $data['userName'] = $user->data->userName;
+        $data['email'] = $user->data->email;
+        $data['facebook'] = $user->data->facebook;
+        $data['google'] = $user->data->google;
+//        $data['cookie_set'] = $token['cookie_set'];
+//        $data['useBlob'] = $user['useBlob'];
+//        $data['user_icon'] = $user['user_icon_big'];
 
         if($gameID){
 
