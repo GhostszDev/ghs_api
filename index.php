@@ -237,7 +237,9 @@ function getTokenData($token){
 
     $data['success'] = false;
 
-    $tok = $_REQUEST['token'] ?: $token;
+    $tok = $_COOKIE['token'] ?: $token;
+
+
 
     $result = wp_remote_post(site . 'wp-json/wp/v2/users/me', array(
         'method' => 'GET',
@@ -245,7 +247,7 @@ function getTokenData($token){
         'redirection' => 5,
         'httpversion' => '1.0',
         'blocking' => true,
-        'headers' => array('Authorization' => 'Bearer ' . $tok),
+        'headers' => array('Authorization' => 'Bearer ' . "'" . $tok . "'"),
         'body' => array(),
         'cookies' => array()
     ));
@@ -271,12 +273,8 @@ function userToken($userName, $password){
     $user_name = $_REQUEST['userName'] ?: $userName;
     $user_pass = $_REQUEST['user_password'] ?: $password;
 
-    $result = wp_remote_post('http://ghostszmusic.com/wp-json/jwt-auth/v1/token', array(
+    $result = wp_remote_post(site . 'wp-json/jwt-auth/v1/token', array(
         'method' => 'POST',
-        'timeout' => 45,
-        'redirection' => 5,
-        'httpversion' => '1.0',
-        'blocking' => true,
         'headers' => array(
             'Access-Control-Allow-Credentials' => true
         ),
