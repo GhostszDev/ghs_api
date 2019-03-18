@@ -264,12 +264,16 @@ function userToken($userName, $password){
     return $data;
 }
 
-function getuserdata(){
+function getuserdata($user_ID, $userFeed = false){
 
     $data['success'] = false;
     global $wpdb;
 
-    $userID = get_current_user_id();
+    if($userFeed == false) {
+        $userID = get_current_user_id();
+    } else {
+        $userID = $user_ID;
+    }
     $blog_id = get_current_blog_id();
 
     $user = get_userdata($userID);
@@ -970,14 +974,14 @@ function userFeed(){
 
         $getFeed = $wpdb->get_results('SELECT `userID`, `comment`, `date` FROM `userfeed` WHERE `userID` = "' . $check[0]->ID . '"');
 
-        $userData = getuserdata($check[0]->ID);
+        $userData = getuserdata($check[0]->ID, true);
         $data['user'] = $userData['user'];
 
         if($getFeed){
 
             $data['success'] = true;
 
-            $user_meta = get_userdata($check[0]->ID);
+            $user_meta = get_userdata($check[0]->ID, true);
 
             $key = 0;
             foreach ($getFeed as $f){
