@@ -273,13 +273,13 @@ function getuserdata(){
     $blog_id = get_current_blog_id();
 
     $user = get_userdata($userID);
-//    $data['test'] = $userID;
+    $data['test'] = $userID;
 
     if($user){
 
         $data['success'] = true;
 
-        $data['user']['ID'] = $user->data->ID;
+        $data['user']['ID'] = $userID;
         $data['user']['first_name'] = ucwords($user->data->firstName);
         $data['user']['last_name'] = ucwords($user->data->lastName);
 
@@ -428,8 +428,8 @@ function login($user = []){
         $data['facebook'] = $user->data->facebook;
         $data['google'] = $user->data->google;
 //        $data['cookie_set'] = $token['cookie_set'];
-//        $data['useBlob'] = $user['useBlob'];
-//        $data['user_icon'] = $user['user_icon_big'];
+        $data['useBlob'] = $user['useBlob'];
+        $data['user_icon'] = $user['user_icon_big'];
 
         if($gameID){
 
@@ -596,7 +596,7 @@ function sendgameData(){
 
     $game = $_REQUEST['gameID'];
     $score = $_REQUEST['score'];
-    $userID = $_REQUEST['userID'];
+    $userID = get_current_user_id();
 
 //    $data['userID'] = $userID;
 
@@ -809,7 +809,7 @@ function getComments(){
 
 function friendsList(){
 
-    $userID = $_REQUEST['userID'];
+    $userID = get_current_user_id();
 
     $data['success'] = false;
     global $wpdb;
@@ -891,7 +891,7 @@ function friendsList(){
 function addFriend(){
 
     $data['success'] = false;
-    $userID = $_REQUEST['userID'];
+    $userID = get_current_user_id();
     $friendID = $_REQUEST['friendID'];
     $data['test'] = $userID;
 
@@ -1035,7 +1035,7 @@ function userUpdate($userID = "", $comment = ""){
     global $wpdb;
 
     $user = array(
-        'userID' => $_REQUEST['userID'] ?: $userID,
+        'userID' => get_current_user_id() ?: $userID,
         'comment' => $_REQUEST['comment'] ?: $comment,
         'comment_parent' => $_REQUEST['comment_parent']
     );
@@ -1072,7 +1072,7 @@ function badgeUnlock(){
     global $wpdb;
 
     $unlock = array(
-        'userID' => $_REQUEST['userID'],
+        'userID' => get_current_user_id(),
         'badgeID' => $_REQUEST['badgeID'],
         'gameID' => $_REQUEST['gameID']
     );
@@ -1128,7 +1128,7 @@ function post_comment(){
     $comment_author_email = $_REQUEST['user_email'];
     $comment_content = $_REQUEST['comment'];
     $comment_parent = $_REQUEST['comment_parent'];
-    $user_id = $_REQUEST['user_id'];
+    $user_id = get_current_user_id();
     $userName = get_userdata($user_id);
 
     $userFeedCom = "<div class='col-xs-4'>
@@ -1357,7 +1357,7 @@ function updateImg(){
     $data['success'] = false;
 
     $img = $_REQUEST['img'];
-    $user_ID = $_REQUEST['user_ID'];
+    $user_ID = get_current_user_id();
 
     if(isset($img) && isset($user_ID)){
         $check = $wpdb->get_results('SELECT `ID`, `userImg` FROM `userstats` WHERE `ID` = '. $user_ID);
@@ -1403,7 +1403,7 @@ function updataUser($user){
     global $wpdb;
     $data['success'] = false;
 
-    $userID = $_REQUEST['userID'] ?: $user['user_ID'];
+    $userID = get_current_user_id() ?: $user['user_ID'];
 
     $user_data = [
         'firstName' => $_REQUEST['first_name'] ?: $user['first_name'],
