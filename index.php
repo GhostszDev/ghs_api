@@ -224,6 +224,15 @@ function ghs_webservice_route(){
         )
     );
 
+	if ( class_exists( 'WooCommerce' ) ) {
+		register_rest_route( 'ghs_api/v1', '/getCart/',
+			array(
+				'methods'  => 'POST',
+				'callback' => 'getCart'
+			)
+		);
+	}
+
 }
 
 function userToken($userName, $password){
@@ -264,26 +273,24 @@ function userToken($userName, $password){
     return $data;
 }
 
-function getuserdata($user_ID, $userFeed = false){
+function getuserdata($userFeed = false){
+
+	$uf = $userFeed;
 
     $data['success'] = false;
     global $wpdb;
 
-    if($userFeed == false) {
-        $userID = get_current_user_id();
-    } else {
-        $userID = $user_ID;
-    }
-    $blog_id = get_current_blog_id();
+    $userID = apply_filters('determine_current_user', false);
+	$blog_id = get_current_blog_id();
 
     $user = get_userdata($userID);
-    $data['test'] = $userID;
+//    $data['test'] = $userID;
 
     if($user){
 
         $data['success'] = true;
 
-        $data['user']['ID'] = $userID;
+        $data['user']['ID'] = $user->data->ID;
         $data['user']['first_name'] = ucwords($user->data->firstName);
         $data['user']['last_name'] = ucwords($user->data->lastName);
 
@@ -398,48 +405,39 @@ function mailing($firstName, $lastName, $email){
 function login($user = []){
 
     global $wpdb;
+    $data['success'] = false;
 
     $cred = [
-        'user_login' => $_REQUEST['user_login'] ?: $user['user_name'],
+        'user_login' => $_REQUEST['user_name'] ?: $user['user_name'],
         'user_password' => $_REQUEST['user_password'] ?: $user['password'],
         'remember' => $_REQUEST['remember'] ?: true
     ];
 
-//    $data['user'] = $cred;
-    $auth = "";
+
 
     $gameID = $_REQUEST['gameID'];
 
     $user = wp_signon( $cred, true );
+
 
     if ( is_wp_error($user) ){
         $data['error_message'] = "Please check your username/and or password.";
         $data['success'] = false;
     } else {
         $data['success'] = true;
-        do_action('wp_login', $user->data);
+        do_action('wp_login', $cred['user_login'], $user);
         $token = userToken($cred['user_login'], $cred['user_password']);
 
-//        $data['test'] = $token;
-        $data['token'] = $token['user']['token'];
-        $userInfo = getuserdata();
 
-        $data['ID'] = $user->data->ID;
-        $data['firstName'] = $user->data->first_name;
-        $data['lastName'] = $user->data->last_name;
-        $data['userName'] = $user->data->userName;
-        $data['email'] = $user->data->email;
-        $data['facebook'] = $user->data->facebook;
-        $data['google'] = $user->data->google;
-//        $data['cookie_set'] = $token['cookie_set'];
-        $data['useBlob'] = $user['useBlob'];
-        $data['user_icon'] = $user['user_icon_big'];
+        $data['token'] = $token['user']['token'];
+        $user = getuserdata();
+        $data['user'] = $user['user'];
 
         if($gameID){
 
             switch($gameID) {
                 case '7bd41fb04c8fac3edd23b749405d052a':
-                    $score = $wpdb->get_results("SELECT `ID`, `score` FROM `wdef_db` WHERE `ID` = '" . $userInfo->ID . "'");
+                    $score = $wpdb->get_results("SELECT `ID`, `score` FROM `wdef_db` WHERE `ID` = '" . $user->data->ID . "'");
                     break;
             }
 
@@ -1431,4 +1429,17 @@ function updataUser($user){
     }
 
     return $data;
+}
+
+function getCart(){
+	$data['success'] = false;
+
+	WC()->session = new WC_Session_Handler();
+	WC()->session->init();
+	WC()->customer = new WC_Customer( get_current_user_id(), true );
+	WC()->cart = new WC_Cart();
+
+	$data['cart'] = WC()->cart->cart_contents;
+
+	return $data;
 }

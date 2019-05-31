@@ -1,4 +1,4 @@
 <?php
 
-const site = 'http://localhost/';
-const base_site = 'localhost';
+const site = 'http://ghostszmusic.local/';
+const base_site = 'ghostszmusic.local';
